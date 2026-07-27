@@ -1,5 +1,7 @@
 # upload.py
 
+from app.services.vectorstore import create_vector_store
+from app.services.embedding import get_embedding_model
 from pathlib import Path
 import shutil
 
@@ -24,6 +26,13 @@ async def upload_pdf(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     chunks = load_and_split_pdf(str(file_path))
+
+    embedding_model = get_embedding_model()
+
+    vector_store = create_vector_store(
+        documents=chunks,
+        embedding_model=embedding_model,
+    )
 
     return {
         "message": "PDF uploaded successfully",

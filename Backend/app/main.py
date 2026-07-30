@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
+# pyrefly: ignore [missing-import]
+from fastapi.routing import APIRoute
 
 from app.database.connection import Base, engine
 from app.routers.upload import router as upload_router
@@ -60,7 +62,9 @@ app.include_router(password_reset_router)
 def home():
     return {"message": "Backend is running"}
 
+
 print("\n========== REGISTERED ROUTES ==========")
 for route in app.routes:
-    print(route.path)
+    if isinstance(route, APIRoute):
+        print(f"{route.path} -> {route.methods}")
 print("=======================================\n")

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
 from datetime import datetime
 from sqlalchemy.orm import relationship
 
@@ -12,6 +12,10 @@ class Conversation(Base):
     is_pinned = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    user = relationship("User", back_populates="conversations")
 
     messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
     documents = relationship("Document", back_populates="conversation", cascade="all, delete-orphan")

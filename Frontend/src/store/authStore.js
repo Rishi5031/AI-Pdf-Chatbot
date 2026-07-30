@@ -1,0 +1,130 @@
+import { create } from 'zustand';
+import { authService } from '../services/authService';
+import { setToken, removeToken, getToken } from '../utils/token';
+
+export const useAuthStore = create((set, get) => ({
+  user: null,
+  token: getToken() || null,
+  isAuthenticated: !!getToken(),
+  isCheckingAuth: true, // For initial app load
+  isLoading: false, // For API calls
+  error: null,
+  successMessage: null,
+
+  setUser: (user) => set({ user, isAuthenticated: true }),
+  setToken: (token) => {
+    setToken(token);
+    set({ token, isAuthenticated: true });
+  },
+  
+  clearAuth: () => {
+    removeToken();
+    set({ user: null, token: null, isAuthenticated: false });
+  },
+
+  register: async (userData) => {
+    set({ isLoading: true, error: null });
+    try {
+      await authService.register(userData);
+      // We don't log them in automatically according to the spec, redirect to login
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.detail || 'Registration failed. Please try again.',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
+    try {
+      const data = await authService.login(credentials);
+      get().setToken(data.access_token);
+      get().setUser(data.user);
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.detail || 'Invalid email or password.',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  googleLogin: async (idToken) => {
+    set({ isLoading: true, error: null });
+    try {
+      const data = await authService.googleLogin(idToken);
+      get().setToken(data.access_token);
+      get().setUser(data.user);
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.detail || 'Google authentication failed.',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  logout: () => {
+    get().clearAuth();
+  },
+
+  fetchCurrentUser: async () => {
+    const token = get().token;
+    if (!token) {
+      set({ isCheckingAuth: false, isAuthenticated: false });
+      return;
+    }
+
+    set({ isCheckingAuth: true, error: null });
+    try {
+      const user = await authService.getCurrentUser();
+      set({ user, isAuthenticated: true, isCheckingAuth: false });
+    } catch (error) {
+      console.error("Session expired or invalid");
+      get().clearAuth();
+      set({ isCheckingAuth: false });
+    }
+  },
+
+  forgotPassword: async (email) => {
+    set({ isLoading: true, error: null, successMessage: null });
+    try {
+      const data = await authService.forgotPassword(email);
+      set({ isLoading: false, successMessage: data.message });
+      return true;
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.detail || 'Failed to send reset link.',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  resetPassword: async (token, password, confirmPassword) => {
+    set({ isLoading: true, error: null, successMessage: null });
+    try {
+      const data = await authService.resetPassword(token, password, confirmPassword);
+      set({ isLoading: false, successMessage: data.message });
+      return true;
+    } catch (error) {
+      set({ 
+        error: error.response?.data?.detail || 'Failed to reset password.',
+        isLoading: false 
+      });
+      throw error;
+    }
+  },
+
+  clearMessages: () => {
+    set({ error: null, successMessage: null });
+  },
+}));

@@ -13,36 +13,38 @@ from app.services.conversation_service import (
 from app.services.message_service import get_messages_by_conversation
 from app.schemas.conversation_schema import ConversationResponse, ConversationRename
 from app.schemas.message_schema import MessageResponse
+from app.auth.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(prefix="/api/conversations", tags=["Conversations"])
 
 @router.post("", response_model=ConversationResponse)
-def create_chat(db: Session = Depends(get_db)):
-    return create_conversation(db)
+def create_chat(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return create_conversation(db, current_user.id)
 
 @router.get("", response_model=List[ConversationResponse])
-def get_chats(db: Session = Depends(get_db)):
-    return get_all_conversations(db)
+def get_chats(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return get_all_conversations(db, current_user.id)
 
 @router.get("/{conversation_id}/messages", response_model=List[MessageResponse])
-def chat_history(conversation_id: int, db: Session = Depends(get_db)):
-    # Validate conversation exists
-    conv = get_conversation_by_id(db, conversation_id)
+def chat_history(conversation_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # Validate conversation exists and belongs to user
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
     
     return get_messages_by_conversation(db, conversation_id)
 
 @router.delete("/{conversation_id}")
-def delete_chat(conversation_id: int, db: Session = Depends(get_db)):
-    success = delete_conversation(db, conversation_id)
+def delete_chat(conversation_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    success = delete_conversation(db, conversation_id, current_user.id)
     if not success:
         raise HTTPException(status_code=404, detail="Conversation not found")
     return {"message": "Conversation deleted successfully"}
 
 @router.patch("/{conversation_id}/pin", response_model=ConversationResponse)
-def toggle_pin_chat(conversation_id: int, db: Session = Depends(get_db)):
-    conv = get_conversation_by_id(db, conversation_id)
+def toggle_pin_chat(conversation_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
     
@@ -52,8 +54,8 @@ def toggle_pin_chat(conversation_id: int, db: Session = Depends(get_db)):
     return conv
 
 @router.patch("/{conversation_id}/rename", response_model=ConversationResponse)
-def rename_chat(conversation_id: int, request: ConversationRename, db: Session = Depends(get_db)):
-    conv = get_conversation_by_id(db, conversation_id)
+def rename_chat(conversation_id: int, request: ConversationRename, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
     

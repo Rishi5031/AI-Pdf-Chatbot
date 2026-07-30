@@ -10,6 +10,8 @@ from app.services.document_service import create_document
 from app.services.pdf_service import load_and_split_pdf
 from app.services.vectorstore import create_vector_store
 from app.services.embedding import get_embedding_model
+from app.auth.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(prefix="/api", tags=["Upload"])
 
@@ -20,15 +22,16 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 async def upload_pdf(
     file: UploadFile = File(...),  
     conversation_id: int = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
-    # Validate conversation exists
-    conv = get_conversation_by_id(db, conversation_id)
+    # Validate conversation exists and belongs to user
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
     if not conv:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+        raise HTTPException(status_code=403, detail="Conversation not found or access denied")
 
     file_path = UPLOAD_DIR / file.filename
     

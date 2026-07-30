@@ -1,52 +1,18 @@
-print("STEP 1")
-
 import os
 from dotenv import load_dotenv
-
-print("STEP 2")
-
 # pyrefly: ignore [missing-import]
 from fastapi import FastAPI
-
-print("STEP 3")
-
 from app.database.connection import Base, engine
-
-print("STEP 4")
-
 from app.routers.upload import router as upload_router
-
-print("STEP 5")
-
 from app.routers.chat import router as chat_router
-
-print("STEP 6")
-
 from app.routers.conversation import router as conversation_router
-
-print("STEP 7")
-
 from app.routers.auth import router as auth_router
-
-print("STEP 8")
-
 from app.routers.password_reset import router as password_reset_router
-
-print("STEP 9")
-
 import app.models.user
 
-print("STEP 10")
-
 import app.models.password_reset
-
-print("STEP 11")
-
 load_dotenv()
-print("STEP 12")
-
 Base.metadata.create_all(bind=engine)
-print("STEP 13")
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 

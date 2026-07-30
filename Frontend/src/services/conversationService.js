@@ -19,5 +19,15 @@ export const conversationService = {
   deleteConversation: async (conversationId) => {
     const response = await api.delete(`/api/conversations/${conversationId}`);
     return response.data;
+  },
+
+  togglePin: async (conversationId) => {
+    const response = await api.patch(`/api/conversations/${conversationId}/pin`);
+    return response.data;
+  },
+
+  renameConversation: async (conversationId, newTitle) => {
+    const response = await api.patch(`/api/conversations/${conversationId}/rename`, { title: newTitle });
+    return response.data;
   }
 };

@@ -30,10 +30,10 @@ export default function Home() {
   return (
     <div className="flex h-screen w-full bg-tertiary font-sans">
       {/* Sidebar */}
-      <aside className="w-80 bg-white border-r border-slate-200 flex flex-col justify-between p-4 flex-shrink-0">
+      <aside className="w-80 bg-tertiary border-r border-neutral/30 flex flex-col justify-between p-4 flex-shrink-0">
         <div className="flex-1 overflow-auto flex flex-col">
           <div className="flex items-center gap-3 px-2 mb-6 mt-2 flex-shrink-0">
-            <div className="w-8 h-8 bg-secondary rounded flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-secondary rounded flex items-center justify-center text-tertiary font-bold">
               P
             </div>
             <div>
@@ -50,7 +50,7 @@ export default function Home() {
               <input 
                 type="text" 
                 placeholder="Search files..." 
-                className="w-full pl-9 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
+                className="w-full pl-9 pr-4 py-2 bg-neutral/10 border border-neutral/30 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
               />
             </div>
           </div>
@@ -63,9 +63,9 @@ export default function Home() {
           <div className="space-y-3 px-2 pb-4 overflow-y-auto flex-1">
             {/* File Card 1 (Active) */}
             {activeFile && (
-              <div className="bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between shadow-sm cursor-pointer">
+              <div className="bg-tertiary border border-neutral/30 rounded-xl p-3 flex items-center justify-between shadow-sm cursor-pointer">
                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#e8f0fe] rounded-lg flex items-center justify-center text-secondary">
+                    <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                          <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                       </svg>
@@ -84,13 +84,13 @@ export default function Home() {
         <div>
           <NewChatButton />
           <nav className="space-y-1">
-            <a href="#" className="flex items-center gap-3 px-3 py-2 text-neutral hover:bg-slate-50 hover:text-primary rounded-lg transition-colors">
+            <a href="#" className="flex items-center gap-3 px-3 py-2 text-neutral hover:bg-neutral/10 hover:text-primary rounded-lg transition-colors">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Help
             </a>
-            <a href="#" className="flex items-center gap-3 px-3 py-2 text-neutral hover:bg-slate-50 hover:text-primary rounded-lg transition-colors">
+            <a href="#" className="flex items-center gap-3 px-3 py-2 text-neutral hover:bg-neutral/10 hover:text-primary rounded-lg transition-colors">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
@@ -108,7 +108,7 @@ export default function Home() {
         <div className="flex-1 overflow-hidden flex">
           
           {/* Left Column (Chat Area) */}
-          <div className="flex-1 flex flex-col h-full border-r border-slate-200">
+          <div className="flex-1 flex flex-col h-full border-r border-neutral/30">
             
             {/* Active Document Top Bar */}
             {/* <div className="h-16 border-b border-slate-200 bg-white flex items-center justify-between px-6 flex-shrink-0">
@@ -142,19 +142,19 @@ export default function Home() {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                   {msg.role === 'bot' && (
-                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white flex-shrink-0 mt-1 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-tertiary flex-shrink-0 mt-1 shadow-sm">
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                          <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
                   )}
                   
-                  <div className={`max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-700'} rounded-2xl p-4 text-[15px] leading-relaxed shadow-sm`}>
+                  <div className={`max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-tertiary' : 'bg-neutral/10 text-primary'} rounded-2xl p-4 text-[15px] leading-relaxed shadow-sm`}>
                     {msg.content}
                     
                     {/* Bot action buttons (Helpful/Copy) */}
                     {msg.role === 'bot' && !msg.suggestions && (
-                       <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-200/50 text-xs text-neutral font-medium">
+                       <div className="flex items-center gap-4 mt-4 pt-4 border-t border-neutral/20 text-xs text-neutral font-medium">
                          <button className="flex items-center gap-1 hover:text-primary">
                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.514" />
@@ -180,7 +180,7 @@ export default function Home() {
                     {msg.suggestions && (
                       <div className="flex gap-3 mt-4">
                         {msg.suggestions.map((sug, idx) => (
-                          <button key={idx} onClick={() => askQuestion(sug)} className="bg-white border border-secondary text-secondary text-sm font-medium py-1.5 px-4 rounded-full hover:bg-slate-50 transition-colors">
+                          <button key={idx} onClick={() => askQuestion(sug)} className="bg-tertiary border border-secondary text-secondary text-sm font-medium py-1.5 px-4 rounded-full hover:bg-neutral/10 transition-colors">
                             {sug}
                           </button>
                         ))}
@@ -189,7 +189,7 @@ export default function Home() {
                   </div>
                   
                   {msg.role === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0 mt-1 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-tertiary flex-shrink-0 mt-1 shadow-sm">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -200,22 +200,22 @@ export default function Home() {
               
               {isLoading && (
                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white flex-shrink-0 mt-1 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-tertiary flex-shrink-0 mt-1 shadow-sm">
                       <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                     </div>
-                    <div className="bg-slate-100 rounded-2xl p-4 text-[15px] shadow-sm flex items-center gap-1">
-                       <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
-                       <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
-                       <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>
+                    <div className="bg-neutral/10 rounded-2xl p-4 text-[15px] shadow-sm flex items-center gap-1">
+                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce"></span>
+                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
+                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>
                     </div>
                  </div>
               )}
             </div>
 
             {/* Chat Input */}
-            <div className="p-4 bg-white border-t border-slate-200">
+            <div className="p-4 bg-tertiary border-t border-neutral/30">
               <div className="max-w-3xl mx-auto">
                 <div className="relative flex items-center">
                   <input 
@@ -225,11 +225,11 @@ export default function Home() {
                     onKeyDown={handleKeyDown}
                     disabled={isInitializing || !sessionId}
                     placeholder={isInitializing || !sessionId ? "Creating new chat session..." : "Ask a question about your document..."} 
-                    className="w-full border border-slate-300 rounded-full py-3.5 pl-6 pr-24 focus:outline-none focus:ring-2 focus:ring-secondary/30 shadow-sm text-[15px] disabled:opacity-50 disabled:bg-slate-50"
+                    className="w-full border border-neutral/30 bg-tertiary rounded-full py-3.5 pl-6 pr-24 focus:outline-none focus:ring-2 focus:ring-secondary/30 shadow-sm text-[15px] disabled:opacity-50 disabled:bg-neutral/10"
                   />
                   <div className="absolute right-2 flex items-center gap-1">
                     <UploadBox variant="icon" onUploadSuccess={handleUploadSuccess} />
-                    <button onClick={handleSend} disabled={!question.trim() || isInitializing || !sessionId} className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-slate-800 disabled:opacity-50 transition-colors shadow-md">
+                    <button onClick={handleSend} disabled={!question.trim() || isInitializing || !sessionId} className="w-10 h-10 bg-primary text-tertiary rounded-full flex items-center justify-center hover:bg-primary/90 disabled:opacity-50 transition-colors shadow-md">
                       <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                       </svg>

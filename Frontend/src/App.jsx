@@ -12,7 +12,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="flex h-screen w-full font-sans bg-white overflow-hidden text-slate-800">
+    <div className="flex h-screen w-full font-sans bg-tertiary overflow-hidden text-primary">
       <Toaster position="top-right" />
       <Sidebar />
       <ChatWindow />

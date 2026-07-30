@@ -146,5 +146,34 @@ export const useChatStore = create((set, get) => ({
       console.error("Failed to delete chat", error);
       toast.error("Failed to delete chat");
     }
+  },
+
+  togglePin: async (id) => {
+    try {
+      const updatedConv = await conversationService.togglePin(id);
+      set((state) => ({
+        conversations: state.conversations.map(c => 
+          c.id === id ? updatedConv : c
+        )
+      }));
+    } catch (error) {
+      console.error("Failed to pin chat", error);
+      toast.error("Failed to pin chat");
+    }
+  },
+
+  renameConversation: async (id, newTitle) => {
+    try {
+      const updatedConv = await conversationService.renameConversation(id, newTitle);
+      set((state) => ({
+        conversations: state.conversations.map(c => 
+          c.id === id ? updatedConv : c
+        )
+      }));
+      toast.success("Chat renamed successfully");
+    } catch (error) {
+      console.error("Failed to rename chat", error);
+      toast.error("Failed to rename chat");
+    }
   }
 }));

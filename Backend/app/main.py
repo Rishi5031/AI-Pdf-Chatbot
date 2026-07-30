@@ -16,6 +16,15 @@ load_dotenv()
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+# Dev migration for is_pinned
+from sqlalchemy import text
+try:
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE conversations ADD COLUMN is_pinned BOOLEAN DEFAULT FALSE;"))
+        conn.commit()
+except Exception:
+    pass # Column might already exist
+
 app = FastAPI(title="AI PDF Chatbot")
 
 frontend_urls = [url.strip() for url in os.getenv("FRONTEND_URL", "http://localhost:5173").split(",")]

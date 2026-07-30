@@ -28,7 +28,7 @@ export default function UploadPDF() {
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading || !activeConversationId}
-        className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50"
+        className="p-2 text-neutral/80 hover:text-primary hover:bg-neutral/10 rounded-lg transition-colors disabled:opacity-50"
         title="Upload PDF"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

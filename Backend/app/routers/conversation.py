@@ -11,7 +11,7 @@ from app.services.conversation_service import (
     delete_conversation
 )
 from app.services.message_service import get_messages_by_conversation
-from app.schemas.conversation_schema import ConversationResponse
+from app.schemas.conversation_schema import ConversationResponse, ConversationRename
 from app.schemas.message_schema import MessageResponse
 
 router = APIRouter(prefix="/api/conversations", tags=["Conversations"])
@@ -39,3 +39,25 @@ def delete_chat(conversation_id: int, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="Conversation not found")
     return {"message": "Conversation deleted successfully"}
+
+@router.patch("/{conversation_id}/pin", response_model=ConversationResponse)
+def toggle_pin_chat(conversation_id: int, db: Session = Depends(get_db)):
+    conv = get_conversation_by_id(db, conversation_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    conv.is_pinned = not conv.is_pinned
+    db.commit()
+    db.refresh(conv)
+    return conv
+
+@router.patch("/{conversation_id}/rename", response_model=ConversationResponse)
+def rename_chat(conversation_id: int, request: ConversationRename, db: Session = Depends(get_db)):
+    conv = get_conversation_by_id(db, conversation_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    conv.title = request.title
+    db.commit()
+    db.refresh(conv)
+    return conv

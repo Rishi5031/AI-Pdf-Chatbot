@@ -8,7 +8,7 @@ export default function NewChatButton() {
     <button 
       onClick={startNewChat}
       disabled={isInitializing}
-      className="w-full bg-primary text-white py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 mb-6 shadow hover:bg-slate-800 disabled:opacity-50 transition-colors"
+      className="w-full bg-primary text-tertiary py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 mb-6 shadow hover:opacity-90 disabled:opacity-50 transition-colors"
     >
       {isInitializing ? (
         <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">

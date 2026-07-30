@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from app.models.conversation import Conversation
 from app.models.message import Message
 from app.models.document import Document
+from app.services.vectorstore import delete_from_vector_store
 
-def create_conversation(db: Session, title: str = "New Chat"):
+def create_conversation(db: Session, title: str = "new chat"):
     conversation = Conversation(title=title)
     db.add(conversation)
     db.commit()
@@ -19,6 +20,9 @@ def get_conversation_by_id(db: Session, conversation_id: int):
 def delete_conversation(db: Session, conversation_id: int):
     conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
     if conversation:
+        # Delete related vectors from chroma
+        delete_from_vector_store(conversation_id)
+        
         db.delete(conversation)
         db.commit()
         return True

@@ -102,13 +102,49 @@ export const useChatStore = create((set, get) => ({
     const loadingToast = toast.loading("Uploading PDF...");
 
     try {
-      await uploadService.uploadPDF(file, activeConversationId);
+      const response = await uploadService.uploadPDF(file, activeConversationId);
+      
+      // Update conversation title if returned
+      if (response && response.conversation_title) {
+        set((state) => ({
+          conversations: state.conversations.map(conv => 
+            conv.id === activeConversationId 
+              ? { ...conv, title: response.conversation_title }
+              : conv
+          )
+        }));
+      }
+      
       toast.success("PDF uploaded successfully", { id: loadingToast });
     } catch (error) {
       console.error("Upload error", error);
       toast.error("Failed to upload PDF.", { id: loadingToast });
     } finally {
       set({ isUploading: false });
+    }
+  },
+
+  deleteConversation: async (id) => {
+    try {
+      await conversationService.deleteConversation(id);
+      
+      const { conversations, activeConversationId } = get();
+      const updatedConvos = conversations.filter(c => c.id !== id);
+      
+      set({ conversations: updatedConvos });
+      
+      if (activeConversationId === id) {
+        if (updatedConvos.length > 0) {
+          await get().selectConversation(updatedConvos[0].id);
+        } else {
+          await get().createNewChat();
+        }
+      }
+      
+      toast.success("Chat deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete chat", error);
+      toast.error("Failed to delete chat");
     }
   }
 }));

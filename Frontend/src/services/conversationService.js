@@ -14,5 +14,10 @@ export const conversationService = {
   getMessages: async (conversationId) => {
     const response = await api.get(`/api/conversations/${conversationId}/messages`);
     return response.data;
+  },
+
+  deleteConversation: async (conversationId) => {
+    const response = await api.delete(`/api/conversations/${conversationId}`);
+    return response.data;
   }
 };

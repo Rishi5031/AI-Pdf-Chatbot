@@ -59,11 +59,20 @@ async def upload_pdf(
             embedding_model=embedding_model,
         )
 
+        # Update conversation title to PDF name
+        pdf_name = file.filename
+        if pdf_name.lower().endswith('.pdf'):
+            pdf_name = pdf_name[:-4]
+        conv.title = pdf_name
+        db.commit()
+        db.refresh(conv)
+
         return {
             "message": "PDF uploaded successfully",
             "document_id": doc.id,
             "filename": file.filename,
             "total_chunks": len(chunks),
+            "conversation_title": conv.title
         }
     except Exception as e:
         print(f"Error during upload: {e}")

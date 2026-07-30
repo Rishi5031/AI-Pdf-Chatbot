@@ -59,3 +59,8 @@ app.include_router(password_reset_router)
 @app.get("/")
 def home():
     return {"message": "Backend is running"}
+
+print("\n========== REGISTERED ROUTES ==========")
+for route in app.routes:
+    print(route.path)
+print("=======================================\n")

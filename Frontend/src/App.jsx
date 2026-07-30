@@ -1,14 +1,21 @@
+import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import Home from "./pages/Home";
-import { ChatProvider } from "./context/ChatContext";
+import Sidebar from './components/Sidebar';
+import ChatWindow from './components/ChatWindow';
+import { useChatStore } from './store/chatStore';
 
-function App() {
+export default function App() {
+  const { init } = useChatStore();
+
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
-    <ChatProvider>
+    <div className="flex h-screen w-full font-sans bg-white overflow-hidden text-slate-800">
       <Toaster position="top-right" />
-      <Home />
-    </ChatProvider>
+      <Sidebar />
+      <ChatWindow />
+    </div>
   );
 }
-
-export default App;

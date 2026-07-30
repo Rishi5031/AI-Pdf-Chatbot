@@ -1,37 +1,38 @@
 # pyrefly: ignore [missing-import]
-from app.utils.id_generator import generate_chunk_ids
+import chromadb
 # pyrefly: ignore [missing-import]
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
+from app.services.embedding import get_embedding_model
 
-PERSIST_DIRECTORY = "app/chroma_db"
+CHROMA_DB_DIR = "app/chroma_db"
+
+def get_chroma_client():
+    return chromadb.PersistentClient(path=CHROMA_DB_DIR)
 
 def create_vector_store(documents, embedding_model):
-    """
-    Create and persist a Chroma vector store.
-    """
-
-    vector_store = Chroma.from_documents(
+    client = get_chroma_client()
+    return Chroma.from_documents(
         documents=documents,
         embedding=embedding_model,
-        ids=generate_chunk_ids(documents),
-        persist_directory=PERSIST_DIRECTORY,
+        client=client,
+        collection_name="pdf_collection",
     )
 
-    return vector_store
-
 def get_vector_store(embedding_model):
+    client = get_chroma_client()
     return Chroma(
-        persist_directory=PERSIST_DIRECTORY,
+        client=client,
+        collection_name="pdf_collection",
         embedding_function=embedding_model,
     )
 
-def get_retriever(embedding_model, session_id):
+def get_retriever(embedding_model, conversation_id: int):
     vector_store = get_vector_store(embedding_model)
 
     retriever = vector_store.as_retriever(
         search_kwargs={
             "k": 4,
-            "filter": {"session_id": session_id}
+            "filter": {"conversation_id": conversation_id}
         }
     )
 

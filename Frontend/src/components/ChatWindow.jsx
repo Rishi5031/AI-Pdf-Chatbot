@@ -13,24 +13,48 @@ export default function ChatWindow() {
 
   if (isInitializing) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-tertiary">
+      <div className="flex-1 flex items-center justify-center bg-surface">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-tertiary overflow-hidden relative">
+    <div className="flex-1 flex flex-col bg-surface overflow-hidden relative">
       <div className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-neutral max-w-sm mx-auto text-center px-4">
-            <div className="w-16 h-16 bg-neutral/10 rounded-full flex items-center justify-center mb-6 shadow-sm">
-              <svg className="w-8 h-8 text-neutral/80" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+          <div className="h-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 pb-20">
+            
+            {/* Welcome Graphic */}
+            <div className="w-20 h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
+              <svg className="w-10 h-10 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-primary mb-2">How can I help you today?</h2>
-            <p className="text-sm">Upload a PDF using the paperclip icon below and ask me questions about its content.</p>
+            
+            <h2 className="text-3xl font-bold text-primary mb-4 tracking-tight">How can I help you today?</h2>
+            <p className="text-base text-neutral text-center max-w-md mb-12">
+              Upload a PDF using the paperclip icon below and ask me questions about its content.
+            </p>
+
+            {/* Suggestion Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+              
+              <button className="flex flex-col items-start p-5 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group">
+                <svg className="w-5 h-5 text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-sm font-medium text-primary group-hover:text-secondary transition-colors">Summarize complex legal terms</span>
+              </button>
+
+              <button className="flex flex-col items-start p-5 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group">
+                <svg className="w-5 h-5 text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span className="text-sm font-medium text-primary group-hover:text-secondary transition-colors">Analyze financial trends</span>
+              </button>
+              
+            </div>
           </div>
         ) : (
           <div className="pb-4">
@@ -39,15 +63,17 @@ export default function ChatWindow() {
             ))}
             
             {isLoading && (
-              <div className="py-6 flex justify-center bg-neutral/10 border-y border-neutral/20">
-                <div className="max-w-3xl w-full px-4 flex gap-6">
-                  <div className="w-8 h-8 rounded-sm bg-primary text-tertiary flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-sm">
-                    AI
-                  </div>
-                  <div className="flex-1 pt-1 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce"></span>
-                    <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
-                    <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>
+              <div className="py-3 flex justify-center w-full">
+                <div className="max-w-3xl w-full px-4 flex justify-start">
+                  <div className="flex items-start gap-4 w-full bg-tertiary border border-neutral/20 rounded-2xl p-6 shadow-sm">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-sm bg-secondary text-white">
+                      AI
+                    </div>
+                    <div className="flex-1 pt-2.5 flex items-center gap-1.5">
+                      <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce"></span>
+                      <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
+                      <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -20,8 +20,8 @@ export default function ChatInput() {
   };
 
   return (
-    <div className="bg-tertiary pt-4 pb-8 px-4 w-full">
-      <div className="max-w-3xl mx-auto relative flex items-end border border-neutral/30 rounded-xl shadow-sm focus-within:ring-1 focus-within:ring-secondary/30 focus-within:border-secondary/30 bg-tertiary overflow-hidden">
+    <div className="bg-surface pt-4 pb-8 px-4 w-full">
+      <div className="max-w-3xl mx-auto relative flex items-end border border-neutral/20 rounded-xl shadow-sm focus-within:ring-1 focus-within:ring-secondary/50 focus-within:border-secondary/50 bg-surface overflow-hidden">
         
         <div className="flex items-center pl-2 pb-2 h-[52px]">
           <UploadPDF />
@@ -31,9 +31,9 @@ export default function ChatInput() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={activeConversationId ? "Message ChatGPT..." : "Please create a new chat to begin..."}
+          placeholder={activeConversationId ? "Ask anything about your documents..." : "Please create a new chat to begin..."}
           disabled={!activeConversationId}
-          className="w-full max-h-32 min-h-[52px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px]"
+          className="w-full max-h-32 min-h-[52px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] text-primary placeholder-neutral"
           rows={1}
         />
 
@@ -41,18 +41,18 @@ export default function ChatInput() {
           <button
             onClick={handleSend}
             disabled={!text.trim() || isLoading || !activeConversationId}
-            className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-tertiary disabled:bg-neutral/20 disabled:text-neutral/40 transition-colors"
+            className="w-9 h-9 rounded-lg flex items-center justify-center bg-secondary text-white disabled:bg-neutral/20 disabled:text-neutral/40 transition-colors shadow-sm shadow-secondary/20"
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+            <svg className="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
         </div>
 
       </div>
-      {/* <div className="text-center text-xs text-neutral mt-2">
-        ChatGPT can make mistakes. Check important info.
-      </div> */}
+      <div className="text-center text-xs text-neutral/70 mt-3 font-medium">
+        DocIntel AI can make mistakes. Verify Important Info.
+      </div>
     </div>
   );
 }

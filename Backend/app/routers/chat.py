@@ -41,7 +41,53 @@ def chat(
         chain = get_rag_chain(request.conversation_id)
 
         # 3. Generate answer
-        answer = chain.invoke(request.question)
+        result = chain.invoke(request.question)
+        answer = result["answer"]
+        context_docs = result.get("context", [])
+
+        if context_docs:
+            from collections import defaultdict
+            file_pages = defaultdict(set)
+            
+            for doc in context_docs:
+                filename = doc.metadata.get("filename", "Unknown Document")
+                page_val = doc.metadata.get("page")
+                
+                # Format page nicely
+                if page_val is not None and isinstance(page_val, int):
+                    page_str = f"Page {page_val + 1}"
+                elif page_val is not None:
+                    page_str = f"Page {page_val}"
+                else:
+                    page_str = ""
+                    
+                if page_str:
+                    file_pages[filename].add(page_str)
+                else:
+                    # To ensure the file is still recorded even without pages
+                    if filename not in file_pages:
+                        file_pages[filename] = set()
+            
+            source_parts = []
+            for filename, pages in file_pages.items():
+                valid_pages = sorted(list(pages))
+                if valid_pages:
+                    pages_str = ", ".join(valid_pages)
+                    if len(valid_pages) > 1:
+                        source_parts.append(f"{filename} {{{pages_str}}}")
+                    else:
+                        # For a single page, we can use curly braces as requested
+                        source_parts.append(f"{filename} {{{pages_str}}}")
+                else:
+                    source_parts.append(f"{filename}")
+            
+            if len(source_parts) > 0:
+                combined_sources = ", ".join(source_parts)
+                first_filename = list(file_pages.keys())[0]
+                import urllib.parse
+                safe_uri = urllib.parse.quote(first_filename)
+                answer += f"\n\n[Source: {combined_sources}](#source:{safe_uri})"
+                
     except Exception as e:
         print(f"Error generating answer: {e}")
         # Even if it fails, maybe we save an error message, but raising exception is standard for now.

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useChatStore } from '../store/chatStore';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
+import DocumentBar from './DocumentBar';
 
 export default function ChatWindow() {
   const { messages, isLoading, isInitializing, activeConversationId } = useChatStore();
@@ -21,6 +22,8 @@ export default function ChatWindow() {
 
   return (
     <div className="flex-1 flex flex-col bg-surface overflow-hidden relative">
+      <DocumentBar />
+
       <div className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 pb-20">
@@ -33,8 +36,11 @@ export default function ChatWindow() {
             </div>
             
             <h2 className="text-3xl font-bold text-primary mb-4 tracking-tight">How can I help you today?</h2>
-            <p className="text-base text-neutral text-center max-w-md mb-12">
+            <p className="text-base text-neutral text-center max-w-md mb-2">
               Upload a PDF using the paperclip icon below and ask me questions about its content.
+            </p>
+            <p className="text-xs text-neutral/70 font-medium mb-12">
+              You can upload up to 20 documents in a single chat.
             </p>
 
             {/* Suggestion Cards */}

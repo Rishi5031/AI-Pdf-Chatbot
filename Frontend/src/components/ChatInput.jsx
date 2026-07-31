@@ -20,10 +20,10 @@ export default function ChatInput() {
   };
 
   return (
-    <div className="bg-surface pt-4 pb-8 px-4 w-full">
+    <div className="bg-surface pt-2 pb-4 px-4 w-full border-t border-transparent">
       <div className="max-w-3xl mx-auto relative flex items-end border border-neutral/20 rounded-xl shadow-sm focus-within:ring-1 focus-within:ring-secondary/50 focus-within:border-secondary/50 bg-surface overflow-hidden">
         
-        <div className="flex items-center pl-2 pb-2 h-[52px]">
+        <div className="flex items-center justify-center pl-2 h-[52px] w-12 flex-shrink-0">
           <UploadPDF />
         </div>
 
@@ -37,7 +37,7 @@ export default function ChatInput() {
           rows={1}
         />
 
-        <div className="flex items-center pr-2 pb-2 h-[52px]">
+        <div className="flex items-center justify-center pr-2 h-[52px] w-12 flex-shrink-0">
           <button
             onClick={handleSend}
             disabled={!text.trim() || isLoading || !activeConversationId}

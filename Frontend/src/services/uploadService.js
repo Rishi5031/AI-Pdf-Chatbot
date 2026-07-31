@@ -1,7 +1,7 @@
 import api from '../api/axios';
 
 export const uploadService = {
-  uploadPDF: async (file, conversationId) => {
+  uploadPDF: async (file, conversationId, onUploadProgress) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('conversation_id', conversationId);
@@ -10,6 +10,7 @@ export const uploadService = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      onUploadProgress,
     });
     return response.data;
   }

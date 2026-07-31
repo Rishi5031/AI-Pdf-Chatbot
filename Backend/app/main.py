@@ -8,6 +8,7 @@ from app.routers.chat import router as chat_router
 from app.routers.conversation import router as conversation_router
 from app.routers.auth import router as auth_router
 from app.routers.password_reset import router as password_reset_router
+from app.routers.document import router as document_router
 import app.models.user
 
 import app.models.password_reset
@@ -63,6 +64,7 @@ app.include_router(chat_router)
 app.include_router(conversation_router)
 app.include_router(auth_router)
 app.include_router(password_reset_router)
+app.include_router(document_router)
 
 
 @app.get("/")

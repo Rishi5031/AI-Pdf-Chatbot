@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ChatWindow from '../components/ChatWindow';
+import PDFPreviewModal from '../components/PDFPreviewModal';
 import { useChatStore } from '../store/chatStore';
 
 export default function Dashboard() {
@@ -7,11 +8,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     init();
-  }, []);
+  }, [init]);
 
   return (
-    <div className="flex-1 h-full w-full bg-white flex overflow-hidden">
+    <>
       <ChatWindow />
-    </div>
+      <PDFPreviewModal />
+    </>
   );
 }

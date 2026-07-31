@@ -248,7 +248,7 @@ export default function Sidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-primary truncate leading-tight">{user.name}</p>
-              <p className="text-[11px] text-neutral mt-0.5 tracking-wide">Pro Plan</p>
+              <p className="text-[11px] text-neutral mt-0.5 tracking-wide">Free Plan</p>
             </div>
             <svg className={`w-4 h-4 text-neutral flex-shrink-0 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />

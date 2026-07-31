@@ -48,3 +48,11 @@ def delete_from_vector_store(conversation_id: int):
         collection.delete(where={"conversation_id": conversation_id})
     except Exception as e:
         print(f"Error deleting from vector store: {e}")
+
+def delete_document_vectors(document_id: int):
+    client = get_chroma_client()
+    try:
+        collection = client.get_collection("pdf_collection")
+        collection.delete(where={"document_id": document_id})
+    except Exception as e:
+        print(f"Error deleting document vectors from store: {e}")

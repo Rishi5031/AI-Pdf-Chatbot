@@ -1,14 +1,19 @@
 import React, { useRef } from 'react';
 import { useChatStore } from '../store/chatStore';
+import { useDocumentStore } from '../store/documentStore';
 
 export default function UploadPDF() {
-  const { uploadPDF, isUploading, activeConversationId } = useChatStore();
+  const { activeConversationId } = useChatStore();
+  const { uploadDocuments, isUploading } = useDocumentStore();
   const fileInputRef = useRef(null);
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      await uploadPDF(file);
+    const files = e.target.files;
+    if (files && files.length > 0 && activeConversationId) {
+      const pdfFiles = Array.from(files).filter(file => file.type === 'application/pdf');
+      if (pdfFiles.length > 0) {
+        await uploadDocuments(pdfFiles, activeConversationId);
+      }
       // Reset input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -23,6 +28,7 @@ export default function UploadPDF() {
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="application/pdf"
+        multiple
         className="hidden"
       />
       <button

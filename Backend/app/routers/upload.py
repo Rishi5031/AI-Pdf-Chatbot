@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
 from app.services.conversation_service import get_conversation_by_id
-from app.services.document_service import create_document
+from app.services.document_service import create_document, get_documents_by_conversation
 from app.services.pdf_service import load_and_split_pdf
 from app.services.vectorstore import create_vector_store
 from app.services.embedding import get_embedding_model
@@ -18,6 +18,10 @@ router = APIRouter(prefix="/api", tags=["Upload"])
 UPLOAD_DIR = Path("app/uploaded_files")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+MAX_DOCUMENTS_PER_CONVERSATION = 20
+MAX_FILE_SIZE_MB = 20
+MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+
 @router.post("/upload")
 async def upload_pdf(
     file: UploadFile = File(...),  
@@ -28,10 +32,20 @@ async def upload_pdf(
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
+    if file.size and file.size > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(status_code=400, detail=f"File size exceeds the {MAX_FILE_SIZE_MB}MB limit.")
+
     # Validate conversation exists and belongs to user
     conv = get_conversation_by_id(db, conversation_id, current_user.id)
     if not conv:
         raise HTTPException(status_code=403, detail="Conversation not found or access denied")
+
+    existing_docs = get_documents_by_conversation(db, conversation_id)
+    if len(existing_docs) >= MAX_DOCUMENTS_PER_CONVERSATION:
+        raise HTTPException(status_code=400, detail=f"Maximum of {MAX_DOCUMENTS_PER_CONVERSATION} documents per conversation reached.")
+
+    if any(doc.filename == file.filename for doc in existing_docs):
+        raise HTTPException(status_code=400, detail="A document with this filename already exists in this conversation.")
 
     file_path = UPLOAD_DIR / file.filename
     
@@ -62,13 +76,14 @@ async def upload_pdf(
             embedding_model=embedding_model,
         )
 
-        # Update conversation title to PDF name
-        pdf_name = file.filename
-        if pdf_name.lower().endswith('.pdf'):
-            pdf_name = pdf_name[:-4]
-        conv.title = pdf_name
-        db.commit()
-        db.refresh(conv)
+        # Update conversation title to PDF name only if it's the first document
+        if len(existing_docs) == 0:
+            pdf_name = file.filename
+            if pdf_name.lower().endswith('.pdf'):
+                pdf_name = pdf_name[:-4]
+            conv.title = pdf_name
+            db.commit()
+            db.refresh(conv)
 
         return {
             "message": "PDF uploaded successfully",

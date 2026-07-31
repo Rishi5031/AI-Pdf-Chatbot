@@ -6,12 +6,31 @@ from app.database.connection import get_db
 from app.schemas.chat_schema import ChatRequest, ChatResponse
 from app.services.message_service import save_message
 from app.services.conversation_service import get_conversation_by_id
+from app.services.title_service import generate_chat_title
 from app.chain.rag_chain import get_rag_chain
 from app.auth.dependencies import get_current_user
 from app.models.user import User
 
 router = APIRouter(prefix="/api", tags=["Chat"])
 
+@router.post("/chat/generate-title")
+def generate_title_endpoint(
+    request: ChatRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    conv = get_conversation_by_id(db, request.conversation_id, current_user.id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+        
+    if not conv.title or conv.title.strip().lower() == "new chat":
+        new_title = generate_chat_title(request.question)
+        if new_title and new_title.lower() != "new chat":
+            conv.title = new_title
+            db.commit()
+            return {"title": new_title}
+            
+    return {"title": conv.title}
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(
@@ -40,7 +59,7 @@ def chat(
     try:
         chain = get_rag_chain(request.conversation_id)
 
-        # 3. Generate answer
+        # 4. Generate answer
         result = chain.invoke(request.question)
         answer = result["answer"]
         context_docs = result.get("context", [])

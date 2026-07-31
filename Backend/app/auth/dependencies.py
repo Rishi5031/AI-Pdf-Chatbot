@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.auth.jwt import decode_access_token
 from app.models.user import User
+# pyrefly: ignore [missing-import]
 from fastapi import Query
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")

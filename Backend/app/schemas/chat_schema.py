@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class ChatRequest(BaseModel):
     conversation_id: int
@@ -6,3 +7,4 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+    title: Optional[str] = None

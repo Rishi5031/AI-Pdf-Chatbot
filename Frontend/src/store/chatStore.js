@@ -61,8 +61,12 @@ export const useChatStore = create((set, get) => ({
   },
 
   sendMessage: async (question) => {
-    const { activeConversationId } = get();
+    const { activeConversationId, conversations } = get();
     if (!activeConversationId || !question.trim()) return;
+
+    // Check if it's a new chat before optimistic update
+    const activeConv = conversations.find(c => c.id == activeConversationId);
+    const isNewChat = !activeConv.title || activeConv.title.toLowerCase() === 'new chat';
 
     // Optimistic UI update
     const tempUserMsg = { id: Date.now(), role: 'user', content: question };
@@ -71,14 +75,33 @@ export const useChatStore = create((set, get) => ({
       isLoading: true
     }));
 
+    // Fire off title generation concurrently if needed
+    if (isNewChat) {
+      chatService.generateTitle(activeConversationId, question)
+        .then(res => {
+          if (res.title) {
+            set(state => ({
+              conversations: state.conversations.map(c => 
+                c.id == activeConversationId ? { ...c, title: res.title } : c
+              )
+            }));
+          }
+        })
+        .catch(err => console.error("Title generation failed:", err));
+    }
+
     try {
       const response = await chatService.sendMessage(activeConversationId, question);
       
       const botMsg = { id: Date.now() + 1, role: 'assistant', content: response.answer };
       
-      set((state) => ({
-        messages: [...state.messages, botMsg]
-      }));
+      set((state) => {
+        const nextState = {
+          messages: [...state.messages, botMsg]
+        };
+        
+        return nextState;
+      });
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to send message.");

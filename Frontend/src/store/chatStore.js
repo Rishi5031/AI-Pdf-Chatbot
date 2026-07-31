@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { conversationService } from '../services/conversationService';
 import { chatService } from '../services/chatService';
 import { uploadService } from '../services/uploadService';
+import { summaryService } from '../services/summaryService';
 import { useSuggestionStore } from './suggestionStore';
 import toast from 'react-hot-toast';
 
@@ -17,6 +18,8 @@ export const useChatStore = create((set, get) => ({
   abortController: null,
   streamQueue: '',
   streamInterval: null,
+  summaryLoading: false,
+  summaryType: null,
 
   init: async () => {
     set({ isInitializing: true });
@@ -229,6 +232,120 @@ export const useChatStore = create((set, get) => ({
     set({ abortController: controller });
   },
 
+  generateSummary: async (summaryType) => {
+    const { activeConversationId, conversations } = get();
+    if (!activeConversationId) return;
+
+    // Determine user message based on summary type
+    const typeLabel = summaryType.charAt(0).toUpperCase() + summaryType.slice(1);
+    const question = `Please provide a ${summaryType} summary of the documents.`;
+
+    const tempUserMsg = { id: Date.now(), role: 'user', content: question };
+    set((state) => ({
+      messages: [...state.messages, tempUserMsg],
+      isLoading: true,
+      streaming: true,
+      summaryLoading: true,
+      summaryType: summaryType,
+      currentStreamingMessage: '',
+      streamQueue: ''
+    }));
+
+    const interval = setInterval(() => {
+      set(state => {
+        if (state.streamQueue.length > 0) {
+          const chunkSize = Math.max(1, Math.floor(state.streamQueue.length / 100));
+          const chars = state.streamQueue.slice(0, chunkSize);
+          return {
+            currentStreamingMessage: state.currentStreamingMessage + chars,
+            streamQueue: state.streamQueue.slice(chunkSize)
+          };
+        }
+        return state;
+      });
+    }, 100);
+
+    set({ streamInterval: interval });
+
+    const controller = summaryService.streamSummary(
+      activeConversationId,
+      summaryType,
+      (chunk) => {
+        set((state) => ({
+          streamQueue: state.streamQueue + chunk,
+          isLoading: false
+        }));
+      },
+      (metadata) => {
+        set((state) => {
+          clearInterval(state.streamInterval);
+          
+          let finalContent = state.currentStreamingMessage + state.streamQueue;
+          let uniqueSources = [];
+          if (metadata.sources && metadata.sources.length > 0) {
+            uniqueSources = Array.from(new Set(metadata.sources.map(s => s.filename)));
+          }
+
+          const botMsg = { 
+            id: Date.now() + 1, 
+            role: 'assistant', 
+            content: finalContent,
+            sources: uniqueSources
+          };
+          
+          return {
+            messages: [...state.messages, botMsg],
+            currentStreamingMessage: '',
+            streamQueue: '',
+            streaming: false,
+            summaryLoading: false,
+            summaryType: null,
+            abortController: null,
+            streamInterval: null
+          };
+        });
+      },
+      (error) => {
+        console.error("Streaming error:", error);
+        toast.error(error.message || "Stream interrupted or failed.");
+        set((state) => {
+          clearInterval(state.streamInterval);
+          
+          let finalContent = state.currentStreamingMessage + state.streamQueue;
+          if (finalContent) {
+            finalContent += "\n\n*(Stream interrupted)*";
+            const botMsg = { id: Date.now() + 1, role: 'assistant', content: finalContent };
+            return {
+              messages: [...state.messages, botMsg],
+              currentStreamingMessage: '',
+              streamQueue: '',
+              streaming: false,
+              summaryLoading: false,
+              summaryType: null,
+              abortController: null,
+              streamInterval: null
+            };
+          } else {
+            const errorMsg = { id: Date.now() + 1, role: 'assistant', content: "Sorry, I encountered an error while summarizing your documents." };
+            return {
+              messages: [...state.messages, errorMsg],
+              currentStreamingMessage: '',
+              streamQueue: '',
+              streaming: false,
+              isLoading: false,
+              summaryLoading: false,
+              summaryType: null,
+              abortController: null,
+              streamInterval: null
+            };
+          }
+        });
+      }
+    );
+
+    set({ abortController: controller });
+  },
+
   cancelStreaming: () => {
     const { abortController, currentStreamingMessage, streamQueue, streamInterval } = get();
     if (abortController) {
@@ -252,7 +369,9 @@ export const useChatStore = create((set, get) => ({
       abortController: null, 
       currentStreamingMessage: '',
       streamQueue: '',
-      streamInterval: null
+      streamInterval: null,
+      summaryLoading: false,
+      summaryType: null
     });
   },
 

@@ -10,11 +10,15 @@ from app.services.conversation_service import (
     get_conversation_by_id,
     delete_conversation
 )
-from app.services.message_service import get_messages_by_conversation
+from app.services.message_service import get_messages_by_conversation, save_message
 from app.schemas.conversation_schema import ConversationResponse, ConversationRename
 from app.schemas.message_schema import MessageResponse
+from app.schemas.summary_schema import SummaryRequest
 from app.schemas.suggested_question_schema import SuggestedQuestionResponse
 from app.services.suggested_question_service import get_suggested_questions
+from app.services.summary_service import stream_summary_generator
+# pyrefly: ignore [missing-import]
+from fastapi.responses import StreamingResponse
 from app.auth.dependencies import get_current_user
 from app.models.user import User
 
@@ -73,3 +77,32 @@ def get_conversation_suggestions(conversation_id: int, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Conversation not found")
     
     return get_suggested_questions(db, conversation_id)
+
+@router.post("/{conversation_id}/summarize")
+def summarize_conversation_documents(
+    conversation_id: int, 
+    request: SummaryRequest, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found or access denied")
+    
+    from app.services.document_service import get_documents_by_conversation
+    docs = get_documents_by_conversation(db, conversation_id)
+    if not docs:
+        raise HTTPException(status_code=404, detail="No uploaded documents found in this conversation")
+    
+    # Save the user action
+    save_message(
+        db=db,
+        conversation_id=conversation_id,
+        role="user",
+        content=f"Please provide a {request.summary_type} summary of the documents."
+    )
+    
+    return StreamingResponse(
+        stream_summary_generator(db, conversation_id, current_user.id, request.summary_type),
+        media_type="text/event-stream"
+    )

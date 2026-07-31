@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useDocumentStore } from '../store/documentStore';
 import { useChatStore } from '../store/chatStore';
 import DocumentList from './DocumentList';
+import ChatToolbar from './ChatToolbar';
 
 export default function DocumentBar() {
   const { activeConversationId } = useChatStore();
@@ -48,6 +49,11 @@ export default function DocumentBar() {
         <DocumentList onAddClick={() => !isUploading && fileInputRef.current?.click()} isUploading={isUploading} />
       </div>
 
+      {documents.length > 0 && (
+        <div className="ml-4 flex-shrink-0">
+          <ChatToolbar />
+        </div>
+      )}
     </div>
   );
 }

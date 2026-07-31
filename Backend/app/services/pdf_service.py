@@ -20,3 +20,15 @@ def load_and_split_pdf(pdf_path: str):
     chunks = splitter.split_documents(documents)
 
     return chunks
+
+def extract_raw_text_from_pdf(pdf_path: str) -> str:
+    """
+    Extract raw text from a PDF without chunking.
+    """
+    loader = PyPDFLoader(pdf_path)
+    documents = loader.load()
+    
+    # Combine the page_content of all pages
+    text = "\n".join([doc.page_content for doc in documents])
+    
+    return text

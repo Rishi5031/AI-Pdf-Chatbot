@@ -11,7 +11,7 @@ export default function ChatWindow() {
     messages, isLoading, isInitializing, activeConversationId, 
     streaming, currentStreamingMessage, cancelStreaming, regenerate 
   } = useChatStore();
-  const { documents } = useDocumentStore();
+  const { documents, isUploading } = useDocumentStore();
   const hasDocuments = documents && documents.length > 0;
   const bottomRef = useRef(null);
 
@@ -35,7 +35,7 @@ export default function ChatWindow() {
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 pb-20">
             
-            {!hasDocuments && (
+            {!hasDocuments && !isUploading && (
               <>
                 {/* Welcome Graphic */}
                 <div className="w-20 h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">

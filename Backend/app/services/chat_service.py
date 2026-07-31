@@ -41,12 +41,6 @@ def stream_chat_generator(db: Session, conversation_id: int, user_id: int, quest
         yield f"data: \n\n[ERROR: Failed to generate response]\n\n"
         return
 
-    # After streaming completes, save the full response to the database
-    try:
-        save_message(db=db, conversation_id=conversation_id, role="assistant", content=full_answer)
-    except Exception as e:
-        logger.error(f"Failed to save assistant message: {e}")
-        
     # Generate title if it is still a new chat
     title_updated = None
     try:
@@ -62,11 +56,26 @@ def stream_chat_generator(db: Session, conversation_id: int, user_id: int, quest
         
     # Send the final metadata event containing sources and the new title
     sources = []
+    unique_filenames = []
     if docs:
+        seen = set()
         for d in docs:
             filename = d.metadata.get("filename", "Unknown")
             page = d.metadata.get("page", 1)
             sources.append({"filename": filename, "page": page})
+            if filename not in seen:
+                seen.add(filename)
+                unique_filenames.append(filename)
+
+    # After streaming completes, save the full response to the database with encoded sources
+    save_content = full_answer
+    if unique_filenames:
+        save_content += f"\n\n__SOURCES__{json.dumps(unique_filenames)}"
+
+    try:
+        save_message(db=db, conversation_id=conversation_id, role="assistant", content=save_content)
+    except Exception as e:
+        logger.error(f"Failed to save assistant message: {e}")
             
     metadata = {
         "type": "metadata",

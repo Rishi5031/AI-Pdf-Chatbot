@@ -55,7 +55,25 @@ export const useChatStore = create((set, get) => ({
   selectConversation: async (id) => {
     set({ activeConversationId: id, isLoading: true });
     try {
-      const messages = await conversationService.getMessages(id);
+      let messages = await conversationService.getMessages(id);
+      
+      // Extract hidden sources from content string
+      messages = messages.map(msg => {
+        if (msg.role === 'assistant' && msg.content.includes('\n\n__SOURCES__')) {
+          const parts = msg.content.split('\n\n__SOURCES__');
+          let sources = [];
+          try {
+            sources = JSON.parse(parts[1]);
+          } catch (e) {}
+          return {
+            ...msg,
+            content: parts[0],
+            sources: sources
+          };
+        }
+        return msg;
+      });
+
       set({ messages });
     } catch (error) {
       console.error("Failed to load messages", error);

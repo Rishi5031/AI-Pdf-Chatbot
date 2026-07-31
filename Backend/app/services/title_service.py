@@ -35,3 +35,36 @@ def generate_chat_title(question: str) -> str:
     title = chain.invoke({"question": question})
     # Clean up any potential quotes or whitespace just in case the LLM ignores rules
     return title.strip().strip('"').strip("'")
+
+def stream_chat_title_generator(db, conversation_id: int, user_id: int, question: str):
+    from app.services.conversation_service import get_conversation_by_id
+    conv = get_conversation_by_id(db, conversation_id, user_id)
+    if not conv:
+        yield f"data: [ERROR]\n\n"
+        return
+        
+    if conv.title and conv.title.strip().lower() != "new chat":
+        return
+
+    llm = get_llm()
+    prompt = PromptTemplate.from_template(TITLE_PROMPT_TEMPLATE)
+    chain = prompt | llm | StrOutputParser()
+    
+    full_title = ""
+    try:
+        for chunk in chain.stream({"question": question}):
+            cleaned = chunk.replace('"', '').replace("'", "").replace("\n", " ")
+            if cleaned:
+                full_title += cleaned
+                safe_token = cleaned.replace("\n", "\ndata: ")
+                yield f"data: {safe_token}\n\n"
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        yield f"data: [ERROR]\n\n"
+        return
+        
+    cleaned_title = full_title.strip()
+    if cleaned_title and cleaned_title.lower() != "new chat":
+        conv.title = cleaned_title
+        db.commit()

@@ -1,5 +1,7 @@
 # pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException
+# pyrefly: ignore [missing-import]
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
@@ -10,6 +12,7 @@ from app.services.title_service import generate_chat_title
 from app.chain.rag_chain import get_rag_chain
 from app.auth.dependencies import get_current_user
 from app.models.user import User
+from app.services.chat_service import stream_chat_generator
 
 router = APIRouter(prefix="/api", tags=["Chat"])
 
@@ -19,18 +22,31 @@ def generate_title_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    conv = get_conversation_by_id(db, request.conversation_id, current_user.id)
-    if not conv:
-        raise HTTPException(status_code=404, detail="Conversation not found")
-        
-    if not conv.title or conv.title.strip().lower() == "new chat":
-        new_title = generate_chat_title(request.question)
-        if new_title and new_title.lower() != "new chat":
-            conv.title = new_title
-            db.commit()
-            return {"title": new_title}
-            
-    return {"title": conv.title}
+    from app.services.title_service import stream_chat_title_generator
+    return StreamingResponse(
+        stream_chat_title_generator(db, request.conversation_id, current_user.id, request.question),
+        media_type="text/event-stream"
+    )
+
+@router.post("/chat/stream")
+def stream_chat(
+    request: ChatRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # 1. Save user message immediately before streaming
+    save_message(
+        db=db,
+        conversation_id=request.conversation_id,
+        role="user",
+        content=request.question,
+    )
+    
+    # 2. Return StreamingResponse which will save the assistant message at the end
+    return StreamingResponse(
+        stream_chat_generator(db, request.conversation_id, current_user.id, request.question),
+        media_type="text/event-stream"
+    )
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(

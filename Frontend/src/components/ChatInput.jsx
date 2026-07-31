@@ -4,10 +4,10 @@ import UploadPDF from './UploadPDF';
 
 export default function ChatInput() {
   const [text, setText] = useState('');
-  const { sendMessage, isLoading, activeConversationId } = useChatStore();
+  const { sendMessage, isLoading, activeConversationId, streaming } = useChatStore();
 
   const handleSend = () => {
-    if (!text.trim() || isLoading || !activeConversationId) return;
+    if (!text.trim() || isLoading || streaming || !activeConversationId) return;
     sendMessage(text);
     setText('');
   };
@@ -31,8 +31,8 @@ export default function ChatInput() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={activeConversationId ? "Ask anything about your documents..." : "Please create a new chat to begin..."}
-          disabled={!activeConversationId}
+          placeholder={activeConversationId ? (streaming ? "AI is typing..." : "Ask anything about your documents...") : "Please create a new chat to begin..."}
+          disabled={!activeConversationId || streaming}
           className="w-full max-h-32 min-h-[52px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] text-primary placeholder-neutral"
           rows={1}
         />
@@ -40,7 +40,7 @@ export default function ChatInput() {
         <div className="flex items-center justify-center pr-2 h-[52px] w-12 flex-shrink-0">
           <button
             onClick={handleSend}
-            disabled={!text.trim() || isLoading || !activeConversationId}
+            disabled={!text.trim() || isLoading || streaming || !activeConversationId}
             className="w-9 h-9 rounded-lg flex items-center justify-center bg-secondary text-white disabled:bg-neutral/20 disabled:text-neutral/40 transition-colors shadow-sm shadow-secondary/20"
           >
             <svg className="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

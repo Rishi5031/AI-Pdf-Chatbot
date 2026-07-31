@@ -11,6 +11,11 @@ export const useChatStore = create((set, get) => ({
   isLoading: false,
   isUploading: false,
   isInitializing: true,
+  streaming: false,
+  currentStreamingMessage: '',
+  abortController: null,
+  streamQueue: '',
+  streamInterval: null,
 
   init: async () => {
     set({ isInitializing: true });
@@ -64,53 +69,177 @@ export const useChatStore = create((set, get) => ({
     const { activeConversationId, conversations } = get();
     if (!activeConversationId || !question.trim()) return;
 
-    // Check if it's a new chat before optimistic update
+    // Check if it's a new chat to stream title
     const activeConv = conversations.find(c => c.id == activeConversationId);
     const isNewChat = !activeConv.title || activeConv.title.toLowerCase() === 'new chat';
+
+    if (isNewChat) {
+      // Clear title so it appears blank instead of 'new chat' while streaming
+      set(state => ({
+        conversations: state.conversations.map(c => 
+          c.id == activeConversationId ? { ...c, title: ' ' } : c
+        )
+      }));
+
+      chatService.streamTitle(
+        activeConversationId,
+        question,
+        (chunk) => {
+          set(state => ({
+            conversations: state.conversations.map(c => 
+              c.id == activeConversationId ? { ...c, title: (c.title === ' ' ? '' : c.title) + chunk } : c
+            )
+          }));
+        },
+        (error) => console.error("Title stream error:", error)
+      );
+    }
 
     // Optimistic UI update
     const tempUserMsg = { id: Date.now(), role: 'user', content: question };
     set((state) => ({
       messages: [...state.messages, tempUserMsg],
-      isLoading: true
+      isLoading: true,
+      streaming: true,
+      currentStreamingMessage: '',
+      streamQueue: ''
     }));
 
-    // Fire off title generation concurrently if needed
-    if (isNewChat) {
-      chatService.generateTitle(activeConversationId, question)
-        .then(res => {
-          if (res.title) {
-            set(state => ({
-              conversations: state.conversations.map(c => 
-                c.id == activeConversationId ? { ...c, title: res.title } : c
-              )
-            }));
-          }
-        })
-        .catch(err => console.error("Title generation failed:", err));
-    }
-
-    try {
-      const response = await chatService.sendMessage(activeConversationId, question);
-      
-      const botMsg = { id: Date.now() + 1, role: 'assistant', content: response.answer };
-      
-      set((state) => {
-        const nextState = {
-          messages: [...state.messages, botMsg]
-        };
-        
-        return nextState;
+    // Start typewriter interval for smooth letter-by-letter effect
+    const interval = setInterval(() => {
+      set(state => {
+        if (state.streamQueue.length > 0) {
+          // Type 1 character at a time, only speed up if the queue gets massively behind
+          const chunkSize = Math.max(1, Math.floor(state.streamQueue.length / 100));
+          const chars = state.streamQueue.slice(0, chunkSize);
+          return {
+            currentStreamingMessage: state.currentStreamingMessage + chars,
+            streamQueue: state.streamQueue.slice(chunkSize)
+          };
+        }
+        return state; // No re-render if nothing changed
       });
-    } catch (error) {
-      console.error("Chat error:", error);
-      toast.error("Failed to send message.");
-      const errorMsg = { id: Date.now() + 1, role: 'assistant', content: "Sorry, I encountered an error while processing your request." };
+    }, 100);
+
+    set({ streamInterval: interval });
+
+    const controller = chatService.streamMessage(
+      activeConversationId,
+      question,
+      (chunk) => {
+        set((state) => ({
+          streamQueue: state.streamQueue + chunk,
+          isLoading: false
+        }));
+      },
+      (metadata) => {
+        set((state) => {
+          clearInterval(state.streamInterval);
+          
+          let updatedConversations = state.conversations;
+          if (metadata.title) {
+            updatedConversations = state.conversations.map(c => 
+              c.id == activeConversationId ? { ...c, title: metadata.title } : c
+            );
+          }
+          
+          // Flush whatever is left in the queue
+          let finalContent = state.currentStreamingMessage + state.streamQueue;
+          
+          let uniqueSources = [];
+          if (metadata.sources && metadata.sources.length > 0) {
+            uniqueSources = Array.from(new Set(metadata.sources.map(s => s.filename)));
+          }
+
+          const botMsg = { 
+            id: Date.now() + 1, 
+            role: 'assistant', 
+            content: finalContent,
+            sources: uniqueSources
+          };
+          
+          return {
+            messages: [...state.messages, botMsg],
+            currentStreamingMessage: '',
+            streamQueue: '',
+            streaming: false,
+            abortController: null,
+            streamInterval: null,
+            conversations: updatedConversations
+          };
+        });
+      },
+      (error) => {
+        console.error("Streaming error:", error);
+        toast.error("Stream interrupted or failed.");
+        set((state) => {
+          clearInterval(state.streamInterval);
+          
+          let finalContent = state.currentStreamingMessage + state.streamQueue;
+          if (finalContent) {
+            finalContent += "\n\n*(Stream interrupted)*";
+            const botMsg = { id: Date.now() + 1, role: 'assistant', content: finalContent };
+            return {
+              messages: [...state.messages, botMsg],
+              currentStreamingMessage: '',
+              streamQueue: '',
+              streaming: false,
+              abortController: null,
+              streamInterval: null
+            };
+          } else {
+            const errorMsg = { id: Date.now() + 1, role: 'assistant', content: "Sorry, I encountered an error while processing your request." };
+            return {
+              messages: [...state.messages, errorMsg],
+              currentStreamingMessage: '',
+              streamQueue: '',
+              streaming: false,
+              isLoading: false,
+              abortController: null,
+              streamInterval: null
+            };
+          }
+        });
+      }
+    );
+
+    set({ abortController: controller });
+  },
+
+  cancelStreaming: () => {
+    const { abortController, currentStreamingMessage, streamQueue, streamInterval } = get();
+    if (abortController) {
+      abortController.abort();
+    }
+    if (streamInterval) {
+      clearInterval(streamInterval);
+    }
+    
+    let finalContent = currentStreamingMessage + streamQueue;
+    if (finalContent) {
+      const botMsg = { id: Date.now() + 1, role: 'assistant', content: finalContent + '\n\n*(Stopped by user)*' };
       set((state) => ({
-        messages: [...state.messages, errorMsg]
+        messages: [...state.messages, botMsg]
       }));
-    } finally {
-      set({ isLoading: false });
+    }
+    
+    set({ 
+      streaming: false, 
+      isLoading: false, 
+      abortController: null, 
+      currentStreamingMessage: '',
+      streamQueue: '',
+      streamInterval: null
+    });
+  },
+
+  regenerate: () => {
+    const { messages } = get();
+    for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].role === 'user') {
+            get().sendMessage(messages[i].content);
+            return;
+        }
     }
   },
 

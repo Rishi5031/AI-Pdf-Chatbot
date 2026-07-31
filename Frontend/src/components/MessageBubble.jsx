@@ -2,7 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useDocumentStore } from '../store/documentStore';
 
-export default function MessageBubble({ message }) {
+export default function MessageBubble({ message, isStreaming = false }) {
   const { documents, setPreviewDocument } = useDocumentStore();
   const isUser = message.role === 'user';
 
@@ -59,23 +59,41 @@ export default function MessageBubble({ message }) {
                     if (props.href && props.href.startsWith('#source:')) {
                       const filename = decodeURIComponent(props.href.replace('#source:', ''));
                       return (
-                        <div 
+                        <span 
                           onClick={(e) => handleSourceClick(e, filename)}
-                          className="flex items-start text-secondary font-semibold text-[13px] mb-2 mt-8 decoration-transparent hover:decoration-transparent cursor-pointer hover:underline"
+                          className="inline-flex items-center align-middle text-secondary font-semibold text-[13px] mx-1 cursor-pointer hover:underline"
                         >
-                          <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                           </svg>
                           <span>{props.children}</span>
-                        </div>
+                        </span>
                       );
                     }
-                    return <a {...props} className="text-secondary pt-2" />;
+                    return <a {...props} className="text-secondary" />;
                   }
                 }}
               >
-                {message.content}
+                {message.content + (isStreaming ? ' ▋' : '')}
               </ReactMarkdown>
+              
+              {message.sources && message.sources.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-neutral/10">
+                  <span className="font-semibold text-primary text-[14px]">Sources:</span>
+                  {message.sources.map(filename => (
+                    <span 
+                      key={filename}
+                      onClick={(e) => handleSourceClick(e, filename)}
+                      className="inline-flex items-center align-middle text-secondary font-semibold text-[13px] mx-1 cursor-pointer hover:underline"
+                    >
+                      <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <span>{filename}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -5,12 +5,15 @@ import ChatInput from './ChatInput';
 import DocumentBar from './DocumentBar';
 
 export default function ChatWindow() {
-  const { messages, isLoading, isInitializing, activeConversationId } = useChatStore();
+  const { 
+    messages, isLoading, isInitializing, activeConversationId, 
+    streaming, currentStreamingMessage, cancelStreaming, regenerate 
+  } = useChatStore();
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, currentStreamingMessage]);
 
   if (isInitializing) {
     return (
@@ -68,7 +71,15 @@ export default function ChatWindow() {
               <MessageBubble key={msg.id} message={msg} />
             ))}
             
-            {isLoading && (
+            {streaming && currentStreamingMessage && (
+              <MessageBubble 
+                key="streaming" 
+                message={{ role: 'assistant', content: currentStreamingMessage }} 
+                isStreaming={true} 
+              />
+            )}
+            
+            {isLoading && !currentStreamingMessage && (
               <div className="py-3 flex justify-center w-full">
                 <div className="max-w-3xl w-full px-4 flex justify-start">
                   <div className="flex items-start gap-4 w-full bg-tertiary border border-neutral/20 rounded-2xl p-6 shadow-sm">
@@ -84,6 +95,33 @@ export default function ChatWindow() {
                 </div>
               </div>
             )}
+            
+            <div className="flex justify-center mt-6 mb-2">
+              {streaming ? (
+                <button 
+                  onClick={cancelStreaming}
+                  className="px-5 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-full text-sm font-semibold flex items-center transition-colors border border-red-200 shadow-sm"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <rect x="6" y="6" width="12" height="12" strokeWidth={2} />
+                  </svg>
+                  Stop Generating
+                </button>
+              ) : (
+                messages.length > 0 && messages[messages.length - 1].role === 'assistant' && (
+                  <button 
+                    onClick={regenerate}
+                    className="px-5 py-2 bg-surface hover:bg-neutral/5 text-secondary rounded-full text-sm font-semibold flex items-center transition-colors border border-neutral/20 shadow-sm"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Regenerate
+                  </button>
+                )
+              )}
+            </div>
+
             <div ref={bottomRef} className="h-4" />
           </div>
         )}

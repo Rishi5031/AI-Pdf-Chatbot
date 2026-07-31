@@ -3,12 +3,16 @@ import { useChatStore } from '../store/chatStore';
 import MessageBubble from './MessageBubble';
 import ChatInput from './ChatInput';
 import DocumentBar from './DocumentBar';
+import SuggestedQuestions from './SuggestedQuestions';
+import { useDocumentStore } from '../store/documentStore';
 
 export default function ChatWindow() {
   const { 
     messages, isLoading, isInitializing, activeConversationId, 
     streaming, currentStreamingMessage, cancelStreaming, regenerate 
   } = useChatStore();
+  const { documents } = useDocumentStore();
+  const hasDocuments = documents && documents.length > 0;
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -31,39 +35,27 @@ export default function ChatWindow() {
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 pb-20">
             
-            {/* Welcome Graphic */}
-            <div className="w-20 h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
-              <svg className="w-10 h-10 text-secondary" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-              </svg>
-            </div>
-            
-            <h2 className="text-3xl font-bold text-primary mb-4 tracking-tight">How can I help you today?</h2>
-            <p className="text-base text-neutral text-center max-w-md mb-2">
-              Upload a PDF using the paperclip icon below and ask me questions about its content.
-            </p>
-            <p className="text-xs text-neutral/70 font-medium mb-12">
-              You can upload up to 20 documents in a single chat.
-            </p>
+            {!hasDocuments && (
+              <>
+                {/* Welcome Graphic */}
+                <div className="w-20 h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
+                  <svg className="w-10 h-10 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                
+                <h2 className="text-3xl font-bold text-primary mb-4 tracking-tight">How can I help you today?</h2>
+                <p className="text-base text-neutral text-center max-w-md mb-2">
+                  Upload a PDF using the paperclip icon below and ask me questions about its content.
+                </p>
+                <p className="text-xs text-neutral/70 font-medium mb-12">
+                  You can upload up to 20 documents in a single chat.
+                </p>
+              </>
+            )}
 
             {/* Suggestion Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-              
-              <button className="flex flex-col items-start p-5 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group">
-                <svg className="w-5 h-5 text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span className="text-sm font-medium text-primary group-hover:text-secondary transition-colors">Summarize complex legal terms</span>
-              </button>
-
-              <button className="flex flex-col items-start p-5 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group">
-                <svg className="w-5 h-5 text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                <span className="text-sm font-medium text-primary group-hover:text-secondary transition-colors">Analyze financial trends</span>
-              </button>
-              
-            </div>
+            <SuggestedQuestions />
           </div>
         ) : (
           <div className="pb-4">

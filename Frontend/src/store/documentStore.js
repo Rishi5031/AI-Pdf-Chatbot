@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { documentService } from '../services/documentService';
 import { uploadService } from '../services/uploadService';
 import toast from 'react-hot-toast';
+import { useSuggestionStore } from './suggestionStore';
 
 export const useDocumentStore = create((set, get) => ({
   documents: [],
@@ -69,6 +70,7 @@ export const useDocumentStore = create((set, get) => ({
     // Refresh documents list if any succeeded
     if (successCount > 0) {
       await get().fetchDocuments(conversationId);
+      useSuggestionStore.getState().fetchSuggestions(conversationId);
     }
   },
 

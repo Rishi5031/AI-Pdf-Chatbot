@@ -12,6 +12,11 @@ from app.services.vectorstore import create_vector_store
 from app.services.embedding import get_embedding_model
 from app.auth.dependencies import get_current_user
 from app.models.user import User
+from app.services.suggested_question_service import (
+    generate_suggested_questions,
+    save_suggested_questions,
+    delete_suggested_questions
+)
 
 router = APIRouter(prefix="/api", tags=["Upload"])
 
@@ -75,6 +80,14 @@ async def upload_pdf(
             documents=chunks,
             embedding_model=embedding_model,
         )
+
+        try:
+            delete_suggested_questions(db, conversation_id)
+            questions = generate_suggested_questions(chunks)
+            if questions:
+                save_suggested_questions(db, conversation_id, questions)
+        except Exception as e:
+            print(f"Failed to process suggested questions: {e}")
 
         return {
             "message": "PDF uploaded successfully",

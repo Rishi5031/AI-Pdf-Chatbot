@@ -19,3 +19,4 @@ class Conversation(Base):
 
     messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
     documents = relationship("Document", back_populates="conversation", cascade="all, delete-orphan")
+    suggested_questions = relationship("SuggestedQuestion", back_populates="conversation", cascade="all, delete-orphan")

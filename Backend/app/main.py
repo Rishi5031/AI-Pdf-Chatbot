@@ -10,8 +10,8 @@ from app.routers.auth import router as auth_router
 from app.routers.password_reset import router as password_reset_router
 from app.routers.document import router as document_router
 import app.models.user
-
 import app.models.password_reset
+import app.models.suggested_question
 load_dotenv()
 Base.metadata.create_all(bind=engine)
 # pyrefly: ignore [missing-import]

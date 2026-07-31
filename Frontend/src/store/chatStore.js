@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { conversationService } from '../services/conversationService';
 import { chatService } from '../services/chatService';
 import { uploadService } from '../services/uploadService';
+import { useSuggestionStore } from './suggestionStore';
 import toast from 'react-hot-toast';
 
 export const useChatStore = create((set, get) => ({
@@ -75,6 +76,10 @@ export const useChatStore = create((set, get) => ({
       });
 
       set({ messages });
+      
+      // Also clear suggestions when changing conversations
+      useSuggestionStore.getState().clearSuggestions();
+      
     } catch (error) {
       console.error("Failed to load messages", error);
       toast.error("Failed to load conversation history.");
@@ -272,7 +277,9 @@ export const useChatStore = create((set, get) => ({
     const loadingToast = toast.loading("Uploading PDF...");
 
     try {
+      console.log("Starting PDF upload...");
       const response = await uploadService.uploadPDF(file, activeConversationId);
+      console.log("PDF upload response:", response);
       
       // Update conversation title if returned
       if (response && response.conversation_title) {
@@ -284,6 +291,11 @@ export const useChatStore = create((set, get) => ({
           )
         }));
       }
+      
+      console.log("Triggering fetchSuggestions...");
+      // Trigger fetch suggestions
+      useSuggestionStore.getState().fetchSuggestions(activeConversationId);
+      console.log("fetchSuggestions triggered");
       
       toast.success("PDF uploaded successfully", { id: loadingToast });
     } catch (error) {

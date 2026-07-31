@@ -13,6 +13,8 @@ from app.services.conversation_service import (
 from app.services.message_service import get_messages_by_conversation
 from app.schemas.conversation_schema import ConversationResponse, ConversationRename
 from app.schemas.message_schema import MessageResponse
+from app.schemas.suggested_question_schema import SuggestedQuestionResponse
+from app.services.suggested_question_service import get_suggested_questions
 from app.auth.dependencies import get_current_user
 from app.models.user import User
 
@@ -63,3 +65,11 @@ def rename_chat(conversation_id: int, request: ConversationRename, db: Session =
     db.commit()
     db.refresh(conv)
     return conv
+
+@router.get("/{conversation_id}/suggestions", response_model=List[SuggestedQuestionResponse])
+def get_conversation_suggestions(conversation_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    conv = get_conversation_by_id(db, conversation_id, current_user.id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    return get_suggested_questions(db, conversation_id)

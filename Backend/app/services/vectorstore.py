@@ -18,7 +18,6 @@ def create_vector_store(documents, embedding_model):
         collection_name="pdf_collection",
     )
 
-    print("vector", vector)
     return vector
 
 def get_vector_store(embedding_model):

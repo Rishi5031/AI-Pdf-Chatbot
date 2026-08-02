@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
     GOOGLE_API_KEY: Optional[str] = None
 
+    # Pinecone Vector Store Settings
+    PINECONE_API_KEY: Optional[str] = None
+    PINECONE_INDEX_NAME: Optional[str] = None
+
     class Config:
         env_file = ".env"
         extra = "ignore"

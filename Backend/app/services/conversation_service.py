@@ -20,7 +20,7 @@ def get_conversation_by_id(db: Session, conversation_id: int, user_id: int):
 def delete_conversation(db: Session, conversation_id: int, user_id: int):
     conversation = db.query(Conversation).filter(Conversation.id == conversation_id, Conversation.user_id == user_id).first()
     if conversation:
-        # Delete related vectors from chroma
+        # Delete related vectors from vector store (Pinecone)
         delete_from_vector_store(conversation_id)
         
         db.delete(conversation)

@@ -62,7 +62,7 @@ def delete_document_endpoint(
     if not conv:
         raise HTTPException(status_code=403, detail="Access denied")
         
-    # Delete vectors from ChromaDB
+    # Delete vectors from Pinecone vector store
     delete_document_vectors(document_id)
     
     # Delete from database (which also removes file from disk via our updated service)

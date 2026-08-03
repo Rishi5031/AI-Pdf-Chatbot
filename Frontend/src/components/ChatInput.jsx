@@ -69,7 +69,7 @@ export default function ChatInput() {
 
       <div className="max-w-3xl mx-auto relative flex items-end border border-neutral/20 rounded-xl shadow-sm focus-within:ring-1 focus-within:ring-secondary/50 focus-within:border-secondary/50 bg-surface overflow-hidden">
         {/* Upload Paperclip Icon Button */}
-        <div className="flex items-center justify-center pl-2 pb-2 h-[52px] w-12 flex-shrink-0">
+        <div className="flex items-center justify-center pl-2.5 h-[52px] w-11 flex-shrink-0">
           <UploadPDF />
         </div>
 
@@ -89,12 +89,12 @@ export default function ChatInput() {
               : 'Please create a new chat to begin...'
           }
           disabled={isInputDisabled}
-          className="w-full min-h-[52px] max-h-[160px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] text-primary placeholder-neutral leading-relaxed overflow-y-auto"
+          className="w-full min-h-[52px] max-h-[160px] py-[13px] px-2 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] leading-6 text-primary placeholder-neutral overflow-y-auto"
           rows={1}
         />
 
         {/* Send Button */}
-        <div className="flex items-center justify-center pr-2 pb-2 h-[52px] w-12 flex-shrink-0">
+        <div className="flex items-center justify-center pr-2.5 h-[52px] w-11 flex-shrink-0">
           <button
             onClick={handleSend}
             disabled={isSendDisabled}

@@ -50,11 +50,11 @@ DocIntel AI is a full-stack AI-powered document intelligence platform that enabl
 
 | 💬 Chat & RAG Interface | 📑 Document Upload & Summary |
 | :---: | :---: |
-| ![Chat Interface](assets/chat.png) | ![Document Upload](assets/summary.png) |
+| ![Chat Interface](Frontend/src/assets/chat.png) | ![Document Upload](Frontend/src/assets/summary.png) |
 
 | 🔒 Authentication | 📊 Dashboard & History |
 | :---: | :---: |
-| ![Login Page](assets/login.png) | ![Dashboard Overview](assets/dashboard.png) |
+| ![Login Page](Frontend/src/assets/login.png) | ![Dashboard Overview](Frontend/src/assets/dashboard.png) |
 
 ---
 

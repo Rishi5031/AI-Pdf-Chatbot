@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text
 from datetime import datetime
 from sqlalchemy.orm import relationship
 
@@ -14,9 +14,12 @@ class User(Base):
     provider = Column(String, default="local") # 'local' or 'google'
     google_id = Column(String, nullable=True, unique=True)
     profile_picture = Column(String, nullable=True)
+    profile_image = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
     conversations = relationship("Conversation", back_populates="user", cascade="all, delete-orphan")
+

@@ -244,7 +244,15 @@ export default function Sidebar() {
           >
             <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center font-bold text-sm text-secondary overflow-hidden border border-secondary/20 flex-shrink-0">
               {user.profile_picture ? (
-                <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+                <img 
+                  src={
+                    user.profile_picture.startsWith('http')
+                      ? user.profile_picture
+                      : `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}${user.profile_picture}`
+                  } 
+                  alt={user.name} 
+                  className="w-full h-full object-cover" 
+                />
               ) : (
                 user.name.substring(0, 2).toUpperCase()
               )}

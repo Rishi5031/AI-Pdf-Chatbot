@@ -5,13 +5,13 @@ export default function PasswordInput({ label, value, onChange, required = true,
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="relative">
         <input
           type={showPassword ? 'text' : 'password'}
           required={required}
           disabled={disabled}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-gray-900 pr-10"
+          className="w-full px-3.5 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-xs sm:text-sm text-gray-900 pr-10"
           value={value}
           onChange={onChange}
         />

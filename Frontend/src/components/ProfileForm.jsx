@@ -51,15 +51,15 @@ export default function ProfileForm({ profile }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs">
-      <div className="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
-        <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-7 shadow-xs">
+      <div className="flex items-center gap-2 mb-4 sm:mb-6 border-b border-slate-100 pb-3 sm:pb-4">
+        <svg className="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
-        <h2 className="text-lg font-bold text-slate-800">Personal Information</h2>
+        <h2 className="text-base sm:text-lg font-bold text-slate-800">Personal Information</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Top 2 Columns for Full Name & Email */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Full Name */}
@@ -77,7 +77,7 @@ export default function ProfileForm({ profile }) {
               placeholder="Full Name"
               className={`w-full px-3.5 py-2 bg-white border ${
                 errors.name ? 'border-red-500 focus:ring-red-500' : 'border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'
-              } rounded-lg text-sm text-slate-800 focus:outline-none transition-all`}
+              } rounded-lg text-xs sm:text-sm text-slate-800 focus:outline-none transition-all`}
             />
             {errors.name && (
               <p className="text-xs text-red-500 mt-1 font-medium">{errors.name}</p>
@@ -87,7 +87,7 @@ export default function ProfileForm({ profile }) {
           {/* Email */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+              <label className="block text-[10px] sm:text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                 EMAIL
               </label>
               <span className="text-xs text-slate-400 italic font-serif">private</span>
@@ -97,7 +97,7 @@ export default function ProfileForm({ profile }) {
                 type="email"
                 value={profile?.email || ''}
                 disabled
-                className="w-full pl-3.5 pr-10 py-2 bg-slate-100/90 border border-slate-200 rounded-lg text-sm text-slate-500 cursor-not-allowed font-medium select-none"
+                className="w-full pl-3.5 pr-10 py-2 bg-slate-100/90 border border-slate-200 rounded-lg text-xs sm:text-sm text-slate-500 cursor-not-allowed font-medium select-none"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,7 +111,7 @@ export default function ProfileForm({ profile }) {
         {/* Short Bio */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+            <label className="block text-[10px] sm:text-[11px] font-bold text-slate-700 uppercase tracking-wider">
               SHORT BIO
             </label>
             <span
@@ -132,7 +132,7 @@ export default function ProfileForm({ profile }) {
             placeholder="Brief description for your profile..."
             className={`w-full px-3.5 py-2.5 bg-white border ${
               errors.bio ? 'border-red-500 focus:ring-red-500' : 'border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'
-            } rounded-lg text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400 resize-none`}
+            } rounded-lg text-xs sm:text-sm text-slate-800 focus:outline-none transition-all placeholder-slate-400 resize-none`}
           />
           {errors.bio && (
             <p className="text-xs text-red-500 mt-1 font-medium">{errors.bio}</p>
@@ -144,7 +144,7 @@ export default function ProfileForm({ profile }) {
           <button
             type="submit"
             disabled={saving}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 min-h-[40px]"
           >
             {saving ? (
               <>

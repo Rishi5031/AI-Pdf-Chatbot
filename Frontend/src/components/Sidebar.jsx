@@ -3,7 +3,7 @@ import { useChatStore } from '../store/chatStore';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { conversations, activeConversationId, createNewChat, selectConversation, deleteConversation, togglePin, renameConversation, isInitializing } = useChatStore();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -61,11 +61,13 @@ export default function Sidebar() {
 
   const handleSelectChat = (id) => {
     selectConversation(id);
+    onClose?.();
     navigate('/dashboard');
   };
 
   const handleNewChat = async () => {
     await createNewChat();
+    onClose?.();
     navigate('/dashboard');
   };
 
@@ -73,7 +75,7 @@ export default function Sidebar() {
     chats.map((conv) => (
       <div
         key={conv.id}
-        className={`w-full group flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+        className={`w-full group flex items-center justify-between px-3 py-2 rounded-lg text-xs sm:text-sm transition-colors cursor-pointer ${
           activeConversationId === conv.id
             ? 'bg-neutral/10 text-secondary font-medium border-l-4 border-secondary'
             : 'text-primary hover:bg-neutral/10 border-l-4 border-transparent'
@@ -152,22 +154,39 @@ export default function Sidebar() {
   );
 
   return (
-    <div className="w-64 bg-tertiary flex flex-col h-full flex-shrink-0 relative">
+    <div className={`fixed inset-y-0 left-0 z-50 w-72 lg:w-64 bg-tertiary flex flex-col h-full flex-shrink-0 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:translate-x-0 ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
       <div 
-        className="p-5 cursor-pointer"
-        onClick={() => navigate('/dashboard')}
+        className="p-5 cursor-pointer flex items-center justify-between"
+        onClick={() => {
+          navigate('/dashboard');
+          onClose?.();
+        }}
       >
-        <h1 className="text-xl font-bold text-secondary tracking-tight">DocIntel AI</h1>
-        <p className="text-[11px] text-neutral mt-0.5 tracking-wider uppercase">AI Document Intelligence</p>
+        <div>
+          <h1 className="text-lg sm:text-xl font-bold text-secondary tracking-tight">DocIntel AI</h1>
+          <p className="text-[10px] sm:text-[11px] text-neutral mt-0.5 tracking-wider uppercase">AI Document Intelligence</p>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose?.();
+          }}
+          className="lg:hidden p-1.5 rounded-lg text-neutral hover:text-primary hover:bg-neutral/10 transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+          aria-label="Close menu"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       <div className="px-5 pb-4">
         <button
           onClick={handleNewChat}
           disabled={isInitializing}
-          className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-sm shadow-secondary/20 cursor-pointer"
+          className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-sm shadow-secondary/20 cursor-pointer"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           New Chat
@@ -184,30 +203,30 @@ export default function Sidebar() {
             placeholder="Search chats..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-surface border border-neutral/20 rounded-lg text-sm text-primary focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 transition-all placeholder-neutral/70"
+            className="w-full pl-9 pr-4 py-2 bg-surface border border-neutral/20 rounded-lg text-xs sm:text-sm text-primary focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 transition-all placeholder-neutral/70"
           />
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {isInitializing ? (
-          <div className="text-sm text-neutral">Loading...</div>
+          <div className="text-xs sm:text-sm text-neutral">Loading...</div>
         ) : filteredConversations.length === 0 ? (
-          <div className="text-sm text-neutral/70 italic">
+          <div className="text-xs sm:text-sm text-neutral/70 italic">
             {searchQuery ? "No chats found." : "No history found."}
           </div>
         ) : (
           <>
             {pinnedChats.length > 0 && (
               <div className="space-y-2">
-                <h3 className="text-xs font-bold text-neutral/80 uppercase tracking-wider mb-3">Pinned Chats</h3>
+                <h3 className="text-[10px] sm:text-xs font-bold text-neutral/80 uppercase tracking-wider mb-3">Pinned Chats</h3>
                 {renderChatList(pinnedChats)}
               </div>
             )}
             
             {recentChats.length > 0 && (
               <div className="space-y-1">
-                <h3 className="text-[10px] font-bold text-neutral uppercase tracking-wider mb-2 ml-1">Recent Documents</h3>
+                <h3 className="text-[10px] sm:text-xs font-bold text-neutral uppercase tracking-wider mb-2 ml-1">Recent Documents</h3>
                 {renderChatList(recentChats)}
               </div>
             )}
@@ -224,7 +243,10 @@ export default function Sidebar() {
                <Link 
                   to="/profile" 
                   className="w-full flex items-center px-4 py-3 text-sm text-primary hover:bg-neutral/10 transition-colors border-b border-neutral/10"
-                  onClick={() => setIsProfileDropdownOpen(false)}
+                  onClick={() => {
+                    setIsProfileDropdownOpen(false);
+                    onClose?.();
+                  }}
                 >
                   <svg className="w-4 h-4 mr-3 text-neutral" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />

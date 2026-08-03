@@ -39,16 +39,16 @@ export default function SuggestedQuestions() {
   }
 
   return (
-    <div className="w-full mt-8">
-      <h3 className="text-sm font-semibold text-neutral mb-3 px-1">Suggested Questions</h3>
-      <div className="flex flex-col gap-3 w-full">
+    <div className="w-full mt-6 sm:mt-8">
+      <h3 className="text-xs sm:text-sm font-semibold text-neutral mb-2 sm:mb-3 px-1">Suggested Questions</h3>
+      <div className="flex flex-col gap-2.5 sm:gap-3 w-full">
         {suggestions.map((suggestion) => (
           <button 
             key={suggestion.id}
             onClick={() => sendMessage(suggestion.question)}
-            className="flex flex-col items-start p-4 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/50"
+            className="flex flex-col items-start p-3 sm:p-4 bg-surface border border-neutral/20 rounded-xl hover:border-secondary hover:shadow-md hover:shadow-secondary/10 transition-all text-left group cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/50"
           >
-            <span className="text-sm font-medium text-primary group-hover:text-secondary transition-colors line-clamp-2">
+            <span className="text-xs sm:text-sm font-medium text-primary group-hover:text-secondary transition-colors line-clamp-2">
               {suggestion.question}
             </span>
           </button>

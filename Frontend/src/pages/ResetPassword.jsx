@@ -84,14 +84,14 @@ export default function ResetPassword() {
 
   return (
     <div>
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Reset Password</h2>
-        <p className="text-sm text-gray-500 mt-2">
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Reset Password</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
           Please enter your new password below.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
         <PasswordInput
           label="New Password"
           value={password}
@@ -109,7 +109,7 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={isSubmitting || !password || !confirmPassword}
-          className="w-full bg-secondary text-white font-medium py-2.5 rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
+          className="w-full bg-secondary text-white text-xs sm:text-sm font-medium py-2.5 min-h-[44px] rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 cursor-pointer"
         >
           {isSubmitting ? (
             <>

@@ -11,9 +11,9 @@ export default function Dashboard() {
   }, [init]);
 
   return (
-    <>
+    <div className="flex-1 flex flex-col min-h-0 min-w-0 h-full w-full overflow-hidden relative bg-surface">
       <ChatWindow />
       <PDFPreviewModal />
-    </>
+    </div>
   );
 }

@@ -27,17 +27,17 @@ export default function DocumentBar() {
   if (!activeConversationId) return null;
 
   return (
-    <div className="w-full bg-tertiary border-b border-neutral/10 flex flex-row items-center py-3 px-6 h-[72px]">
+    <div className="w-full bg-tertiary border-b border-neutral/10 flex flex-row items-center py-2 sm:py-3 px-3 sm:px-6 min-h-[56px] sm:h-[72px] gap-2 sm:gap-4">
       
       {/* Title */}
-      <div className="flex-shrink-0 mr-6">
-        <span className="text-[11px] font-bold text-neutral uppercase tracking-wider">
+      <div className="flex-shrink-0">
+        <span className="text-[10px] sm:text-[11px] font-bold text-neutral uppercase tracking-wider whitespace-nowrap">
           WORKSPACE ({documents.length}/20)
         </span>
       </div>
 
       {/* Document List & Add Button Container */}
-      <div className="flex-1 flex flex-row items-center overflow-hidden">
+      <div className="flex-1 flex flex-row items-center overflow-hidden min-w-0">
         <input
           type="file"
           ref={fileInputRef}
@@ -50,7 +50,7 @@ export default function DocumentBar() {
       </div>
 
       {documents.length > 0 && (
-        <div className="ml-4 flex-shrink-0">
+        <div className="flex-shrink-0">
           <ChatToolbar />
         </div>
       )}

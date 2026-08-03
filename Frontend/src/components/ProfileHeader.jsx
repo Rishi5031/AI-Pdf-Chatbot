@@ -58,12 +58,12 @@ export default function ProfileHeader({ profile, isGoogleUser }) {
     : 'August 3, 2026';
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs mb-6">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left w-full md:w-auto">
+    <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-7 shadow-xs mb-4 sm:mb-6">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left w-full md:w-auto">
           {/* Avatar with Camera Badge */}
           <div className="relative group flex-shrink-0">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-50/80 border border-slate-200 flex items-center justify-center text-indigo-700 font-bold text-3xl overflow-hidden relative shadow-xs">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-indigo-50/80 border border-slate-200 flex items-center justify-center text-indigo-700 font-bold text-2xl sm:text-3xl overflow-hidden relative shadow-xs">
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
@@ -105,7 +105,7 @@ export default function ProfileHeader({ profile, isGoogleUser }) {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-0 right-0 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-md transition-transform active:scale-95 cursor-pointer disabled:opacity-50 border-2 border-white"
+              className="absolute bottom-0 right-0 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-md transition-transform active:scale-95 cursor-pointer disabled:opacity-50 border-2 border-white min-w-[32px] min-h-[32px] flex items-center justify-center"
               title="Upload Profile Picture"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,9 +134,9 @@ export default function ProfileHeader({ profile, isGoogleUser }) {
           </div>
 
           {/* User Details */}
-          <div>
-            <div className="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <div className="min-w-0">
+            <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 flex-wrap">
+              <h1 className="text-xl sm:text-3xl font-bold text-slate-900 tracking-tight break-words">
                 {profile?.name || 'rishi makwana'}
               </h1>
               <span className="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px] tracking-wider uppercase">

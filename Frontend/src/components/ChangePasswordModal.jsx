@@ -64,10 +64,10 @@ export default function ChangePasswordModal({ isOpen, onClose, isGoogleUser }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-4 backdrop-blur-xs">
-      <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-2xl max-w-md w-full border border-neutral/20 animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-3 sm:p-4 backdrop-blur-xs">
+      <div className="bg-surface p-4 sm:p-8 rounded-2xl shadow-2xl max-w-md w-full border border-neutral/20 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+          <h3 className="text-lg sm:text-xl font-bold text-primary flex items-center gap-2">
             <svg className="w-5 h-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -84,13 +84,13 @@ export default function ChangePasswordModal({ isOpen, onClose, isGoogleUser }) {
         </div>
 
         {isGoogleUser ? (
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm mb-4">
+          <div className="p-3.5 sm:p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs sm:text-sm mb-4">
             You signed in using Google OAuth. Password changes are managed directly through your Google Account.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-neutral uppercase tracking-wider mb-1">
+              <label className="block text-[11px] sm:text-xs font-semibold text-neutral uppercase tracking-wider mb-1">
                 Current Password
               </label>
               <input
@@ -100,9 +100,9 @@ export default function ChangePasswordModal({ isOpen, onClose, isGoogleUser }) {
                   setCurrentPassword(e.target.value);
                   if (errors.currentPassword) setErrors({ ...errors, currentPassword: null });
                 }}
-                className={`w-full px-4 py-2 bg-surface border ${
+                className={`w-full px-3.5 sm:px-4 py-2 bg-surface border ${
                   errors.currentPassword ? 'border-red-500' : 'border-neutral/30 focus:border-secondary'
-                } rounded-xl text-sm text-primary focus:outline-none transition-all`}
+                } rounded-xl text-xs sm:text-sm text-primary focus:outline-none transition-all`}
                 placeholder="Enter current password"
               />
               {errors.currentPassword && (

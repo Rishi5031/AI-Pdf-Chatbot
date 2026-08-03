@@ -54,20 +54,20 @@ export default function ForgotPassword() {
 
   return (
     <div>
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Forgot Password</h2>
-        <p className="text-sm text-gray-500 mt-2">
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Forgot Password</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">
           Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-gray-900"
+            className="w-full px-3.5 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-xs sm:text-sm text-gray-900"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isSubmitting || countdown > 0}
@@ -77,7 +77,7 @@ export default function ForgotPassword() {
         <button
           type="submit"
           disabled={isSubmitting || !email || countdown > 0}
-          className="w-full bg-secondary text-white font-medium py-2.5 rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+          className="w-full bg-secondary text-white text-xs sm:text-sm font-medium py-2.5 min-h-[44px] rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
         >
           {isSubmitting ? (
             <>

@@ -43,24 +43,24 @@ export default function Register() {
 
   return (
     <div>
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Create an account</h2>
-        <p className="text-sm text-gray-500 mt-2">Start using AI PDF Chatbot today.</p>
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create an account</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">Start using AI PDF Chatbot today.</p>
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-3.5 py-2.5 rounded-lg text-xs sm:text-sm">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Full Name</label>
           <input
             type="text"
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-gray-900"
+            className="w-full px-3.5 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-xs sm:text-sm text-gray-900"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             disabled={isSubmitting}
@@ -68,11 +68,11 @@ export default function Register() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-gray-900"
+            className="w-full px-3.5 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-xs sm:text-sm text-gray-900"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             disabled={isSubmitting}
@@ -96,7 +96,7 @@ export default function Register() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-secondary text-white font-medium py-2.5 rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-6"
+          className="w-full bg-secondary text-white text-xs sm:text-sm font-medium py-2.5 min-h-[44px] rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-6 cursor-pointer"
         >
           {isSubmitting ? (
             <>

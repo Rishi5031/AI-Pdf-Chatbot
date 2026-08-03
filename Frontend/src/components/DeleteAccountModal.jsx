@@ -33,11 +33,11 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-4 backdrop-blur-xs">
-      <div className="bg-surface p-6 sm:p-8 rounded-2xl shadow-2xl max-w-md w-full border border-neutral/20 animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 p-3 sm:p-4 backdrop-blur-xs">
+      <div className="bg-surface p-4 sm:p-8 rounded-2xl shadow-2xl max-w-md w-full border border-neutral/20 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
         <div className="flex items-center gap-3 text-red-600 mb-3">
-          <div className="p-2.5 bg-red-100 rounded-xl">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="p-2 sm:p-2.5 bg-red-100 rounded-xl flex-shrink-0">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -46,15 +46,15 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
               />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-primary">Delete Account</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-primary">Delete Account</h3>
         </div>
 
-        <p className="text-neutral text-sm mb-4 leading-relaxed">
+        <p className="text-neutral text-xs sm:text-sm mb-4 leading-relaxed">
           This action <strong className="text-red-600 font-bold">cannot be undone</strong>. All your chat history, uploaded document files, vector indexes, and account data will be permanently deleted.
         </p>
 
         <div className="mb-5">
-          <label className="block text-xs font-semibold text-neutral uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] sm:text-xs font-semibold text-neutral uppercase tracking-wider mb-1.5">
             Type <span className="font-bold text-red-600">DELETE</span> to confirm
           </label>
           <input
@@ -62,17 +62,16 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder="Type DELETE"
-            className="w-full px-4 py-2 bg-surface border border-neutral/30 focus:border-red-500 rounded-xl text-sm text-primary focus:outline-none transition-all font-mono"
+            className="w-full px-3.5 sm:px-4 py-2 bg-surface border border-neutral/30 focus:border-red-500 rounded-xl text-xs sm:text-sm text-primary focus:outline-none transition-all font-mono"
             autoFocus
           />
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-2.5 sm:gap-3">
           <button
             type="button"
             onClick={handleClose}
-            disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-neutral hover:text-primary hover:bg-neutral/10 rounded-xl transition-colors disabled:opacity-50"
+            className="px-3.5 sm:px-4 py-2 rounded-xl text-neutral hover:bg-neutral/10 font-semibold text-xs sm:text-sm transition-colors cursor-pointer min-h-[38px]"
           >
             Cancel
           </button>
@@ -80,7 +79,7 @@ export default function DeleteAccountModal({ isOpen, onClose }) {
             type="button"
             onClick={handleDelete}
             disabled={!isConfirmed || saving}
-            className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all shadow-sm shadow-red-600/20 flex items-center justify-center gap-2 cursor-pointer"
+            className="px-4 sm:px-5 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed min-h-[38px]"
           >
             {saving ? (
               <>

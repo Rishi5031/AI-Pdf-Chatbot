@@ -64,7 +64,7 @@ export default function UploadDropzone() {
       >
         {isUploading ? (
           <div className="w-full">
-            <div className="flex justify-between text-xs text-primary font-medium mb-1.5">
+            <div className="flex justify-between text-[11px] sm:text-xs text-primary font-medium mb-1.5">
               <span>Uploading...</span>
               <span>{uploadProgress}%</span>
             </div>
@@ -77,11 +77,11 @@ export default function UploadDropzone() {
           </div>
         ) : (
           <>
-            <svg className={`w-6 h-6 mb-2 ${isDragOver ? 'text-secondary' : 'text-neutral'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className={`w-5 h-5 sm:w-6 sm:h-6 mb-1.5 sm:mb-2 ${isDragOver ? 'text-secondary' : 'text-neutral'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <span className="text-sm font-medium text-primary">Upload PDF</span>
-            <span className="text-xs text-neutral mt-0.5">Drag & drop or click</span>
+            <span className="text-xs sm:text-sm font-medium text-primary">Upload PDF</span>
+            <span className="text-[10px] sm:text-xs text-neutral mt-0.5">Drag & drop or click</span>
           </>
         )}
       </div>

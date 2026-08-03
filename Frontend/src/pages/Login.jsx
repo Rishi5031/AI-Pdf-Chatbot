@@ -27,24 +27,24 @@ export default function Login() {
 
   return (
     <div>
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-        <p className="text-sm text-gray-500 mt-2">Please enter your details to sign in.</p>
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Welcome back</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2">Please enter your details to sign in.</p>
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-3.5 py-2.5 rounded-lg text-xs sm:text-sm">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-gray-900"
+            className="w-full px-3.5 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-xs sm:text-sm text-gray-900"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
@@ -57,12 +57,12 @@ export default function Login() {
           disabled={isSubmitting}
         />
 
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 cursor-pointer">
+        <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+          <label className="flex items-center gap-2 cursor-pointer py-1">
             <input type="checkbox" className="rounded border-gray-300 text-secondary focus:ring-secondary" />
-            <span className="text-sm text-gray-600">Remember me</span>
+            <span className="text-xs sm:text-sm text-gray-600">Remember me</span>
           </label>
-          <Link to="/forgot-password" className="text-sm font-medium text-secondary hover:text-secondary/80">
+          <Link to="/forgot-password" className="text-xs sm:text-sm font-medium text-secondary hover:text-secondary/80 py-1">
             Forgot password?
           </Link>
         </div>
@@ -70,7 +70,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-secondary text-white font-medium py-2.5 rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+          className="w-full bg-secondary text-white text-xs sm:text-sm font-medium py-2.5 min-h-[44px] rounded-lg shadow-sm hover:bg-secondary/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
         >
           {isSubmitting ? (
             <>

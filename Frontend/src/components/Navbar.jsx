@@ -41,14 +41,14 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-surface text-primary border-b border-neutral/20 h-16 flex-shrink-0 flex items-center justify-between px-6 z-10 relative">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="font-bold text-xl tracking-tight text-secondary">DocIntel AI</span>
+      <nav className="bg-surface text-primary border-b border-neutral/20 h-14 sm:h-16 flex-shrink-0 flex items-center justify-between px-3 sm:px-6 z-10 relative">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <Link to="/" className="flex items-center gap-2 group min-w-0">
+            <span className="font-bold text-lg sm:text-xl tracking-tight text-secondary truncate">DocIntel AI</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2 sm:gap-5 flex-shrink-0">
           {isAuthenticated && user ? (
             <>
               {/* Help Icon */}
@@ -112,11 +112,11 @@ export default function Navbar() {
             </div>
             </>
           ) : (
-            <div className="flex items-center gap-3">
-              <Link to="/login" className="text-sm font-medium text-primary hover:text-secondary transition-colors">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link to="/login" className="text-xs sm:text-sm font-medium text-primary hover:text-secondary transition-colors">
                 Sign in
               </Link>
-              <Link to="/register" className="text-sm font-medium bg-secondary text-white px-4 py-2 rounded-lg shadow-sm hover:bg-secondary/90 transition-colors">
+              <Link to="/register" className="text-xs sm:text-sm font-medium bg-secondary text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg shadow-sm hover:bg-secondary/90 transition-colors">
                 Sign up
               </Link>
             </div>

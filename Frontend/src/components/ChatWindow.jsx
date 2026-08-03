@@ -21,34 +21,34 @@ export default function ChatWindow() {
 
   if (isInitializing) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-surface">
+      <div className="flex-1 h-full w-full flex items-center justify-center bg-surface">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-surface overflow-hidden relative">
+    <div className="flex-1 flex flex-col h-full w-full min-h-0 min-w-0 bg-surface overflow-hidden relative">
       <DocumentBar />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 pb-20">
+          <div className="flex-1 min-h-full w-full flex flex-col items-center justify-center max-w-3xl mx-auto px-4 py-6 sm:pb-20">
             
             {!hasDocuments && !isUploading && (
               <>
                 {/* Welcome Graphic */}
-                <div className="w-20 h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
-                  <svg className="w-10 h-10 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface border-2 border-neutral/10 rounded-2xl flex items-center justify-center mb-6 sm:mb-8 shadow-sm">
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-secondary" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
                 </div>
                 
-                <h2 className="text-3xl font-bold text-primary mb-4 tracking-tight">How can I help you today?</h2>
-                <p className="text-base text-neutral text-center max-w-md mb-2">
+                <h2 className="text-xl sm:text-3xl font-bold text-primary mb-2 sm:mb-4 tracking-tight text-center">How can I help you today?</h2>
+                <p className="text-sm sm:text-base text-neutral text-center max-w-md mb-2 px-2">
                   Upload a PDF using the paperclip icon below and ask me questions about its content.
                 </p>
-                <p className="text-xs text-neutral/70 font-medium mb-12">
+                <p className="text-[11px] sm:text-xs text-neutral/70 font-medium mb-8 sm:mb-12 text-center">
                   You can upload up to 20 documents in a single chat.
                 </p>
               </>
@@ -73,12 +73,12 @@ export default function ChatWindow() {
             
             {isLoading && !currentStreamingMessage && (
               <div className="py-3 flex justify-center w-full">
-                <div className="max-w-3xl w-full px-4 flex justify-start">
-                  <div className="flex items-start gap-4 w-full bg-tertiary border border-neutral/20 rounded-2xl p-6 shadow-sm">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-semibold text-sm shadow-sm bg-secondary text-white">
+                <div className="max-w-3xl w-full px-3 sm:px-4 flex justify-start">
+                  <div className="flex items-start gap-3 sm:gap-4 w-full bg-tertiary border border-neutral/20 rounded-2xl p-4 sm:p-6 shadow-sm">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-semibold text-xs sm:text-sm shadow-sm bg-secondary text-white">
                       AI
                     </div>
-                    <div className="flex-1 pt-2.5 flex items-center gap-1.5">
+                    <div className="flex-1 pt-2 flex items-center gap-1.5">
                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce"></span>
                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
                       <span className="w-2 h-2 bg-neutral/50 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>

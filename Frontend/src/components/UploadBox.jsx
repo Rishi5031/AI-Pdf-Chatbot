@@ -18,14 +18,12 @@ export default function UploadBox({ onUploadSuccess, variant = "box" }) {
     formData.append("file", selectedFile);
     formData.append("session_id", sessionId);
 
-    const loadingToast = toast.loading("Uploading PDF...");
-
     try {
       const response = await api.post("/api/upload", formData);
-      toast.success(response.data.message || "PDF uploaded successfully", { id: loadingToast });
+      toast.success(response.data.message || "PDF uploaded successfully");
       if (onUploadSuccess) onUploadSuccess(selectedFile.name);
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Upload failed", { id: loadingToast });
+      toast.error(error.response?.data?.detail || "Upload failed");
     }
   };
 

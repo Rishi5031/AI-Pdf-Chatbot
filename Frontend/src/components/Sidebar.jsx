@@ -59,6 +59,16 @@ export default function Sidebar() {
   const pinnedChats = filteredConversations.filter(c => c.is_pinned).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const recentChats = filteredConversations.filter(c => !c.is_pinned).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
+  const handleSelectChat = (id) => {
+    selectConversation(id);
+    navigate('/dashboard');
+  };
+
+  const handleNewChat = async () => {
+    await createNewChat();
+    navigate('/dashboard');
+  };
+
   const renderChatList = (chats) => (
     chats.map((conv) => (
       <div
@@ -68,7 +78,7 @@ export default function Sidebar() {
             ? 'bg-neutral/10 text-secondary font-medium border-l-4 border-secondary'
             : 'text-primary hover:bg-neutral/10 border-l-4 border-transparent'
         }`}
-        onClick={() => selectConversation(conv.id)}
+        onClick={() => handleSelectChat(conv.id)}
       >
         <div className="flex items-center gap-3 truncate">
           <svg className={`w-4 h-4 flex-shrink-0 ${activeConversationId === conv.id ? 'text-secondary' : 'text-neutral'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -143,16 +153,19 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 bg-tertiary flex flex-col h-full flex-shrink-0 relative">
-      <div className="p-5">
+      <div 
+        className="p-5 cursor-pointer"
+        onClick={() => navigate('/dashboard')}
+      >
         <h1 className="text-xl font-bold text-secondary tracking-tight">DocIntel AI</h1>
         <p className="text-[11px] text-neutral mt-0.5 tracking-wider uppercase">AI Document Intelligence</p>
       </div>
 
       <div className="px-5 pb-4">
         <button
-          onClick={createNewChat}
+          onClick={handleNewChat}
           disabled={isInitializing}
-          className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-sm shadow-secondary/20"
+          className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-sm shadow-secondary/20 cursor-pointer"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -259,7 +272,7 @@ export default function Sidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-primary truncate leading-tight">{user.name}</p>
-              <p className="text-[11px] text-neutral mt-0.5 tracking-wide">Free Plan</p>
+              <p className="text-[11px] text-neutral mt-0.5 tracking-wide">Free Plan</p> 
             </div>
             <svg className={`w-4 h-4 text-neutral flex-shrink-0 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />

@@ -34,21 +34,18 @@ export const useDocumentStore = create((set, get) => ({
     
     set({ isUploading: true, uploadProgress: 0 });
     
-    const loadingToast = toast.loading(
-      files.length > 1 ? `Uploading ${files.length} documents...` : `Uploading ${files[0].name}...`
-    );
-    
     let successCount = 0;
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       try {
         await uploadService.uploadPDF(file, conversationId, (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          // Calculate overall progress across all files
-          const overallProgress = Math.round(((i * 100) + percentCompleted) / files.length);
-          set({ uploadProgress: overallProgress });
+          const percentCompleted = Math.round((progressEvent.loaded * 90) / progressEvent.total);
+          // Calculate overall progress across all files (scaled to 90%)
+          const overallProgress = Math.round(((i * 90) + percentCompleted) / files.length);
+          set({ uploadProgress: Math.min(overallProgress, 90) });
         });
+        set({ uploadProgress: 95 });
         successCount++;
       } catch (error) {
         console.error(`Failed to upload ${file.name}:`, error);
@@ -60,11 +57,11 @@ export const useDocumentStore = create((set, get) => ({
     set({ isUploading: false, uploadProgress: 0 });
     
     if (successCount === files.length) {
-      toast.success(files.length > 1 ? "All documents uploaded successfully" : "Document uploaded successfully", { id: loadingToast });
+      toast.success(files.length > 1 ? "All documents uploaded successfully" : "Document uploaded successfully");
     } else if (successCount > 0) {
-      toast.success(`Uploaded ${successCount} out of ${files.length} documents`, { id: loadingToast });
+      toast.success(`Uploaded ${successCount} out of ${files.length} documents`);
     } else {
-      toast.error("Failed to upload documents", { id: loadingToast });
+      toast.error("Failed to upload documents");
     }
     
     // Refresh documents list if any succeeded

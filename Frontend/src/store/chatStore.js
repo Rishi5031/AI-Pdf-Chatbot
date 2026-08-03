@@ -393,7 +393,6 @@ export const useChatStore = create((set, get) => ({
     }
 
     set({ isUploading: true });
-    const loadingToast = toast.loading("Uploading PDF...");
 
     try {
       console.log("Starting PDF upload...");
@@ -416,10 +415,10 @@ export const useChatStore = create((set, get) => ({
       useSuggestionStore.getState().fetchSuggestions(activeConversationId);
       console.log("fetchSuggestions triggered");
       
-      toast.success("PDF uploaded successfully", { id: loadingToast });
+      toast.success("PDF uploaded successfully");
     } catch (error) {
       console.error("Upload error", error);
-      toast.error("Failed to upload PDF.", { id: loadingToast });
+      toast.error("Failed to upload PDF.");
     } finally {
       set({ isUploading: false });
     }

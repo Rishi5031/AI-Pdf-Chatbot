@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { authService } from '../services/authService';
 import { setToken, removeToken, getToken } from '../utils/token';
+import { useChatStore } from './chatStore';
+import { useDocumentStore } from './documentStore';
+import { useSuggestionStore } from './suggestionStore';
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -19,6 +22,11 @@ export const useAuthStore = create((set, get) => ({
   
   clearAuth: () => {
     removeToken();
+    try {
+      useChatStore.getState().resetChatStore?.();
+      useDocumentStore.getState().clearDocuments?.();
+      useSuggestionStore.getState().clearSuggestions?.();
+    } catch (e) {}
     set({ user: null, token: null, isAuthenticated: false });
   },
 

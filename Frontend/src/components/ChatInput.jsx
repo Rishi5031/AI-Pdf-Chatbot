@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../store/chatStore';
 import { useDocumentStore } from '../store/documentStore';
 import UploadPDF from './UploadPDF';
 
 export default function ChatInput() {
   const [text, setText] = useState('');
+  const textareaRef = useRef(null);
 
   const { sendMessage, isLoading, activeConversationId, streaming } = useChatStore();
   const { isUploading, uploadProgress } = useDocumentStore();
+
+  // Auto-grow textarea height dynamically up to 160px (~6 lines)
+  const adjustHeight = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = 'auto';
+      const targetHeight = Math.min(Math.max(el.scrollHeight, 52), 160);
+      el.style.height = `${targetHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [text]);
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -53,11 +68,14 @@ export default function ChatInput() {
       )}
 
       <div className="max-w-3xl mx-auto relative flex items-end border border-neutral/20 rounded-xl shadow-sm focus-within:ring-1 focus-within:ring-secondary/50 focus-within:border-secondary/50 bg-surface overflow-hidden">
-        <div className="flex items-center justify-center pl-2 h-[52px] w-12 flex-shrink-0">
+        {/* Upload Paperclip Icon Button */}
+        <div className="flex items-center justify-center pl-2 pb-2 h-[52px] w-12 flex-shrink-0">
           <UploadPDF />
         </div>
 
+        {/* Auto-Expanding Textarea */}
         <textarea
+          ref={textareaRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -71,11 +89,12 @@ export default function ChatInput() {
               : 'Please create a new chat to begin...'
           }
           disabled={isInputDisabled}
-          className="w-full max-h-32 min-h-[52px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] text-primary placeholder-neutral"
+          className="w-full min-h-[52px] max-h-[160px] py-3.5 px-3 resize-none focus:outline-none bg-transparent disabled:opacity-50 text-[15px] text-primary placeholder-neutral leading-relaxed overflow-y-auto"
           rows={1}
         />
 
-        <div className="flex items-center justify-center pr-2 h-[52px] w-12 flex-shrink-0">
+        {/* Send Button */}
+        <div className="flex items-center justify-center pr-2 pb-2 h-[52px] w-12 flex-shrink-0">
           <button
             onClick={handleSend}
             disabled={isSendDisabled}

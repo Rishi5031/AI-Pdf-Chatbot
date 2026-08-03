@@ -19,11 +19,10 @@ export const useDocumentStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const docs = await documentService.getDocumentsByConversation(conversationId);
-      set({ documents: docs });
+      set({ documents: Array.isArray(docs) ? docs : [] });
     } catch (error) {
       console.error("Failed to fetch documents:", error);
-      set({ error: "Failed to load documents." });
-      toast.error("Failed to load documents.");
+      set({ documents: [], error: null });
     } finally {
       set({ isLoading: false });
     }

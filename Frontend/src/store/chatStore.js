@@ -21,8 +21,21 @@ export const useChatStore = create((set, get) => ({
   summaryLoading: false,
   summaryType: null,
 
+  resetChatStore: () => {
+    set({
+      conversations: [],
+      activeConversationId: null,
+      messages: [],
+      isLoading: false,
+      isUploading: false,
+      streaming: false,
+      currentStreamingMessage: '',
+    });
+    useSuggestionStore.getState().clearSuggestions();
+  },
+
   init: async () => {
-    set({ isInitializing: true });
+    set({ isInitializing: true, activeConversationId: null, messages: [] });
     try {
       const convos = await conversationService.getConversations();
       set({ conversations: convos });
@@ -36,7 +49,6 @@ export const useChatStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("Failed to fetch conversations", error);
-      toast.error("Could not load conversations.");
     } finally {
       set({ isInitializing: false });
     }
@@ -57,6 +69,7 @@ export const useChatStore = create((set, get) => ({
   },
 
   selectConversation: async (id) => {
+    if (!id) return;
     set({ activeConversationId: id, isLoading: true });
     try {
       let messages = await conversationService.getMessages(id);
@@ -85,7 +98,7 @@ export const useChatStore = create((set, get) => ({
       
     } catch (error) {
       console.error("Failed to load messages", error);
-      toast.error("Failed to load conversation history.");
+      set({ messages: [] });
     } finally {
       set({ isLoading: false });
     }

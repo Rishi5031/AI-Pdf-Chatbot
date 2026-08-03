@@ -11,12 +11,9 @@ export const useSuggestionStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await suggestionService.getSuggestions(conversationId);
-      set({ suggestions: data, loading: false });
+      set({ suggestions: Array.isArray(data) ? data : [], loading: false });
     } catch (err) {
-      set({ 
-        loading: false, 
-        error: err?.response?.data?.detail || 'Failed to fetch suggestions' 
-      });
+      set({ suggestions: [], loading: false, error: null });
     }
   },
 

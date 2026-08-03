@@ -9,7 +9,7 @@
 [![Pinecone](https://img.shields.io/badge/Pinecone-Vector%20DB-000000?style=flat&logo=pinecone&logoColor=white)](https://www.pinecone.io/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 
-DocIntel AI is a full-stack AI-powered document intelligence platform that enables users to upload one or multiple PDF documents, automatically generate summaries and suggested questions, and chat with their documents using Retrieval-Augmented Generation (RAG) powered by Google Gemini and Pinecone.
+DocIntel AI is a production-ready AI-powered document intelligence platform that enables users to upload and analyze one or multiple PDF documents using Retrieval-Augmented Generation (RAG). The platform provides intelligent document conversations, AI-generated summaries, suggested questions, secure authentication, personalized user profile management, and real-time streaming responses powered by Google Gemini, LangChain, and Pinecone.
 
 ## 📚 Table of Contents
 
@@ -31,10 +31,13 @@ DocIntel AI is a full-stack AI-powered document intelligence platform that enabl
 
 
 ### ✨ Project Highlights
-- **Context-Grounded Q&A**: Semantic vector search with Pinecone ensures responses are backed by uploaded document context.
-- **Automated Document Intelligence**: Automatic executive summaries and suggested follow-up questions generated upon PDF upload.
-- **Multi-Tenant Session Isolation**: Scoped metadata filtering isolates vector search to specific user conversations.
-- **Production-Ready Architecture**: Full containerization using Docker Compose, decoupled React frontend, and FastAPI backend.
+
+- **Context-Grounded Q&A**: Semantic vector search with Pinecone ensures responses are generated strictly from uploaded document context.
+- **Multi-Document Intelligence**: Upload and analyze multiple PDFs simultaneously within a single conversation.
+- **Automated Document Intelligence**: AI-generated summaries and contextual suggested questions accelerate document exploration.
+- **Personalized User Experience**: Secure profile management with avatar uploads, password management, and account statistics.
+- **Multi-Tenant Session Isolation**: Conversation-scoped vector retrieval ensures complete data isolation between users.
+- **Production-Ready Architecture**: Dockerized FastAPI backend, React frontend, PostgreSQL, and Pinecone designed for scalable deployment.
 
 ---
 
@@ -69,9 +72,14 @@ DocIntel AI combines Retrieval-Augmented Generation (RAG), semantic search, Goog
 ## 🌟 Features
 
 ## 🔐 Authentication & User Management
-- JWT bearer token authentication with password hashing (bcrypt).
-- Single Sign-On via Google OAuth 2.0 integration.
-- Tokenized password reset workflow delivered through SMTP email.
+- JWT bearer token authentication with secure password hashing (bcrypt).
+- Google OAuth 2.0 Single Sign-On (SSO).
+- Forgot password workflow with secure email-based reset tokens.
+- Comprehensive user profile management.
+- Update personal information including display name and bio.
+- Upload and manage profile avatars with image validation.
+- Secure password change with current password verification.
+- Personalized account statistics including conversations, uploaded documents, and messages.
 
 ## 🤖 AI Document Intelligence
 - Grounded document Q&A driven by Google Gemini 3.6 Flash via LangChain.
@@ -87,6 +95,14 @@ DocIntel AI combines Retrieval-Augmented Generation (RAG), semantic search, Goog
 - Persistent chat thread logging backed by PostgreSQL.
 - Sidebar thread management with pinning capabilities.
 - Automated conversation title generation based on initial prompts.
+
+## 👤 User Profile
+- View and update personal profile information.
+- Upload and replace profile picture.
+- Secure password management.
+- Personalized account dashboard.
+- Real-time account statistics.
+- Responsive profile management interface.
 
 ### UI
 - Responsive interface built with React 19, Vite, and Tailwind CSS v4.
@@ -266,6 +282,11 @@ npm run dev
 | **Conversations** | `/conversations/` | `GET` | Fetch all user chat histories |
 | **Conversations** | `/conversations/{id}/pin` | `PUT` | Toggle pinned status of a conversation |
 | **Documents** | `/documents/` | `GET` | Retrieve list of user's active documents |
+| **Profile** | `/profile` | `GET` | Retrieve authenticated user profile |
+| **Profile** | `/profile` | `PUT` | Update user profile information |
+| **Profile** | `/profile/avatar` | `POST` | Upload or replace profile picture |
+| **Profile** | `/profile/change-password` | `PUT` | Update account password |
+| **Profile** | `/profile` | `DELETE` | Delete authenticated user account |
 
 ---
 
@@ -292,9 +313,21 @@ npm run dev
 - [x] Multi-PDF ingestion and vector storage
 - [x] Context-grounded Q&A with Gemini 3.6 Flash
 - [x] Google OAuth 2.0 authentication
-- [ ] Streaming response support in UI
-- [ ] Multi-format document ingestion (.docx, .txt)
-- [ ] Hybrid search implementation (BM25 + Dense Vectors)
+- [x] AI-generated document summaries
+- [x] AI-generated suggested questions
+- [x] User profile management
+- [x] Multi-document conversations
+- [x] Real-time streaming responses
+
+### Upcoming Features
+
+- [ ] Multi-format document ingestion (.docx, .txt, .pptx)
+- [ ] Hybrid Search (BM25 + Dense Retrieval)
+- [ ] OCR support for scanned PDFs
+- [ ] Shared conversations
+- [ ] Team workspaces
+- [ ] AI document comparison
+- [ ] Export chat as PDF or Markdown
 
 ---
 
